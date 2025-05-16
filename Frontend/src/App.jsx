@@ -46,7 +46,7 @@ function App() {
     <>
       <NavBar user={null} onLogout={() => {}} />
       
-      {/* Define routes */}
+      {/* Define routes*/}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
