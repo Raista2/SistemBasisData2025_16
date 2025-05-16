@@ -6,11 +6,15 @@ import './App.css'
 import NavBar from './NavBar.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
+import Map from './pages/Map.jsx'
+import Gedung from './pages/Gedung.jsx'
+import Ruangan from './pages/Ruangan.jsx'
+import Reservation from './pages/Reservation.jsx'
+import Approval from './pages/Approval.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
 
-  // HomePage component - we'll extract the original content into this
   function HomePage() {
     return (
       <div className="pt-16">
@@ -47,6 +51,11 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/gedung" element={<Gedung />} />
+        <Route path="/ruangan/:buildingId" element={<Ruangan />} />
+        <Route path="/reservation/:roomId" element={<Reservation />} />
+        <Route path="/approval" element={<Approval />} />
+        <Route path="/map" element={<Map />} />
       </Routes>
     </>
   )
