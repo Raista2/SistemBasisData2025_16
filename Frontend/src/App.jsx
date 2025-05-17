@@ -11,53 +11,37 @@ import Gedung from './pages/Gedung.jsx'
 import Ruangan from './pages/Ruangan.jsx'
 import Reservation from './pages/Reservation.jsx'
 import Approval from './pages/Approval.jsx'
+import Layout from "./pages/BackgroundLayout.jsx"
 
 function App() {
   const [count, setCount] = useState(0)
 
   function HomePage() {
     return (
-      <div className="pt-16">
-        <div>
-          <a href="https://vite.dev" target="_blank">
-            <img src={viteLogo} className="logo" alt="Vite logo" />
-          </a>
-          <a href="https://react.dev" target="_blank">
-            <img src={reactLogo} className="logo react" alt="React logo" />
-          </a>
-        </div>
-        <h1>Vite + React</h1>
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </button>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test HMR
-          </p>
-        </div>
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
-        </p>
+      <div className="pt-16 p-4 md:p-10 lg:p-20 max-w-4xl mx-auto">
+        <div className="text-3xl text-left text-black font-bold">Selamat Datang Di Room Reservation</div>
       </div>
     )
   }
 
   return (
-    <>
+    <div >
       <NavBar user={null} onLogout={() => {}} />
       
       {/* Define routes*/}
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/gedung" element={<Gedung />} />
-        <Route path="/ruangan/:buildingId" element={<Ruangan />} />
-        <Route path="/reservation/:roomId" element={<Reservation />} />
-        <Route path="/approval" element={<Approval />} />
-        <Route path="/map" element={<Map />} />
+        <Route element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/gedung" element={<Gedung />} />
+          <Route path="/ruangan/:buildingId" element={<Ruangan />} />
+          <Route path="/reservation/:roomId" element={<Reservation />} />
+          <Route path="/approval" element={<Approval />} />
+          <Route path="/map" element={<Map />} />
+          </Route>
       </Routes>
-    </>
+    </div>
   )
 }
 

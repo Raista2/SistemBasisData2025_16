@@ -84,14 +84,14 @@ const Ruangan = () => {
     }
 
     return (
-        <div className="pt-16 container mx-auto px-4 py-8">
+        <div className="pt-16 container mx-auto px-4 py-8 md:p-10 lg:p-20">
             <div className="flex items-center mb-6">
                 <Link to="/gedung" className="text-blue-600 hover:underline mr-2">
                     &larr; Kembali ke Daftar Gedung
                 </Link>
             </div>
 
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div className="bg-white rounded-lg shadow-md p-6 mb-8 text-black">
                 <h1 className="text-3xl font-bold mb-2">{building?.name}</h1>
                 <p className="text-gray-600 mb-4">{building?.location}</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -110,7 +110,7 @@ const Ruangan = () => {
                 </div>
             </div>
 
-            <h2 className="text-2xl font-bold mb-4">Daftar Ruangan</h2>
+            <h2 className="text-2xl font-bold mb-4 text-black">Daftar Ruangan</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {rooms.map((room) => (

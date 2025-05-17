@@ -68,8 +68,8 @@ const Map = () => {
     }
 
     return (
-        <div className="pt-16 container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Peta Gedung</h1>
+        <div className="pt-16 container mx-auto px-4 py-8 md:p-10 lg:p-20">
+            <h1 className="text-3xl font-bold mb-6 text-black">Peta Gedung</h1>
 
             <div className="relative w-full h-[600px] border-2 border-gray-300 rounded-lg overflow-hidden mb-8 bg-gray-100">
                 {/* Placeholder for map image */}
@@ -102,9 +102,9 @@ const Map = () => {
                 ))}
             </div>
 
-            <div className="bg-blacl p-4 rounded-lg shadow-md">
-                <h2 className="text-xl font-bold mb-3">Legenda</h2>
-                <div className="flex flex-wrap gap-4">
+            <div className="p-4 rounded-md shadow-md w-full max-w-md bg-white bg-opacity-70 p-8">
+                <h2 className="text-xl font-bold mb-3 text-black">Legenda</h2>
+                <div className="flex flex-wrap gap-4 text-black font-bold">
                     {buildings.map((building) => (
                         <div
                             key={building.id}
