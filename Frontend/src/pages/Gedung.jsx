@@ -63,8 +63,8 @@ const Gedung = () => {
     }
 
     return (
-        <div className="pt-16 container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Daftar Gedung</h1>
+        <div className="pt-16 container mx-auto px-4 py-8 md:p-10 lg:p-20">
+            <h1 className="text-3xl font-bold mb-6 text-black">Daftar Gedung</h1>
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden text-black">
                     <thead className="bg-gray-100">

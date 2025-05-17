@@ -101,9 +101,9 @@ const Reservation = () => {
     }
 
     return (
-        <div className="pt-16 container mx-auto px-4 py-8">
+        <div className="pt-16 container mx-auto px-4 py-8 md:p-10 lg:p-20">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-3xl font-bold mb-6">Reservasi Ruangan</h1>
+                <h1 className="text-3xl font-bold mb-6 text-black">Reservasi Ruangan</h1>
 
                 {submitSuccess && (
                     <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
@@ -117,7 +117,7 @@ const Reservation = () => {
                     </div>
                 )}
 
-                <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+                <div className="bg-white rounded-lg shadow-md p-6 mb-8 text-black">
                     <div className="flex flex-wrap">
                         <div className="w-full md:w-1/3 pr-4">
                             {room?.imageUrl ? (
@@ -159,7 +159,7 @@ const Reservation = () => {
                 </div>
 
                 <div className="bg-white rounded-lg shadow-md p-6">
-                    <h2 className="text-xl font-bold mb-4">Form Reservasi</h2>
+                    <h2 className="text-xl font-bold mb-4 text-black">Form Reservasi</h2>
 
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
