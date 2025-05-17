@@ -11,6 +11,8 @@ import Gedung from './pages/Gedung.jsx'
 import Ruangan from './pages/Ruangan.jsx'
 import Reservation from './pages/Reservation.jsx'
 import Approval from './pages/Approval.jsx'
+import MyReservations from './pages/MyReservations.jsx'  // Tambahkan import ini
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -53,8 +55,18 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/gedung" element={<Gedung />} />
         <Route path="/ruangan/:buildingId" element={<Ruangan />} />
-        <Route path="/reservation/:roomId" element={<Reservation />} />
-        <Route path="/approval" element={<Approval />} />
+        
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/reservation/:roomId" element={<Reservation />} />
+          <Route path="/my-reservations" element={<MyReservations />} />
+        </Route>
+        
+        {/* Admin routes */}
+        <Route element={<ProtectedRoute requireAdmin={true} />}>
+          <Route path="/approval" element={<Approval />} />
+        </Route>
+
         <Route path="/map" element={<Map />} />
       </Routes>
     </>

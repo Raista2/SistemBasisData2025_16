@@ -19,17 +19,30 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check localStorage for user data on initial load
-        const storedUser = localStorage.getItem('fgoUser');
-        if (storedUser) {
-            try {
-                setUser(JSON.parse(storedUser));
-            } catch (error) {
-                console.error('Failed to parse stored user:', error);
-                localStorage.removeItem('fgoUser');
+    const verifyToken = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+        try {
+            const response = await axios.get('/auth/me', {
+            headers: { Authorization: `Bearer ${token}` }
+            });
+            if (response.data.success) {
+            setUser(response.data.payload);
+            } else {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
             }
+        } catch (error) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
         }
         setLoading(false);
+        } else {
+        setLoading(false);
+        }
+    };
+    
+    verifyToken();
     }, []);
 
     const updateUserData = (updatedUserData) => {
@@ -45,23 +58,25 @@ export const AuthProvider = ({ children }) => {
     };
 
     const login = async (email, password) => {
-        try {
-            const response = await api.post('/auth/login', { email, password });
-
-            // Store user in localStorage for persistence
-            localStorage.setItem('fgoUser', JSON.stringify(response.data.user));
-
-            // Update state
-            setUser(response.data.user);
-
-            return { success: true };
-        } catch (error) {
-            console.error('Login error:', error);
-            return {
-                success: false,
-                message: error.response?.data?.message || 'Login failed. Please check your credentials.'
-            };
+    try {
+        const response = await axios.post('/auth/login', { email, password });
+        
+        // Pastikan Anda mengakses struktur respons yang benar
+        if (response.data.success) {
+        const { token, user } = response.data.payload;
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        setUser(user);
+        return { success: true };
+        } else {
+        return { success: false, message: response.data.message };
         }
+    } catch (error) {
+        return { 
+        success: false, 
+        message: error.response?.data?.message || 'Login failed'
+        };
+    }
     };
 
     const register = async (username, email, password) => {

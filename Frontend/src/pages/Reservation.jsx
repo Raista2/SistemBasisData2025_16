@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -26,46 +27,55 @@ const Reservation = () => {
 
     // Get room details
     useEffect(() => {
-        // Mock function to simulate API call
-        const fetchRoomDetailsMock = () => {
-            // Mock room data
-            const mockRoom = {
-                id: parseInt(roomId),
-                buildingId: 1,
-                buildingName: "Gedung A",
-                name: `Ruangan ${roomId}`,
-                capacity: 40,
-                floor: 2,
-                size: 50,
-                type: "Kelas",
-                facilities: "Proyektor, AC, Whiteboard",
-                imageUrl: null
-            };
-
-            // Simulate API delay
-            setTimeout(() => {
-                setRoom(mockRoom);
-                setLoading(false);
-            }, 700);
+        const fetchRoomDetails = async () => {
+        try {
+            const response = await axios.get(`/ruangan/${roomId}`);
+            if (!response.data.success) {
+            throw new Error(response.data.message);
+            }
+            
+            setRoom(response.data.payload);
+        } catch (error) {
+            setError(error.message || 'Failed to fetch room details');
+            console.error('Error fetching room details:', error);
+        } finally {
+            setLoading(false);
+        }
         };
 
-        fetchRoomDetailsMock();
+        fetchRoomDetails();
     }, [roomId]);
 
-    // Redirect to login if not authenticated
-    // useEffect(() => {
-    //     if (!user) {
-    //         navigate('/login', { state: { from: `/reservation/${roomId}` } });
-    //     }
-    // }, [user, navigate, roomId]);
+    // Redirects if not authenticated
+    useEffect(() => {
+        if (!user) {
+        navigate('/login', { state: { from: `/reservation/${roomId}` } });
+        }
+    }, [user, navigate, roomId]);
 
+    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitLoading(true);
         setSubmitError(null);
 
-        // Mock submission
-        setTimeout(() => {
+        try {
+        // Format date for backend
+        const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
+        
+        const response = await axios.post('/peminjaman', {
+            ruangan_id: parseInt(roomId),
+            tanggal: formattedDate,
+            waktu_mulai: startTime,
+            waktu_selesai: endTime,
+            keperluan: purpose,
+            jumlah_peserta: parseInt(attendees),
+            catatan: notes
+        }, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+
+        if (response.data.success) {
             setSubmitSuccess(true);
             // Reset form
             setPurpose('');
@@ -74,12 +84,20 @@ const Reservation = () => {
             setStartTime('08:00');
             setEndTime('10:00');
             setNotes('');
-            setSubmitLoading(false);
-
+            
+            // Redirect after delay
             setTimeout(() => {
-                navigate('/my-reservations');
+            navigate('/my-reservations');
             }, 2000);
-        }, 1000);
+        } else {
+            setSubmitError(response.data.message);
+        }
+        } catch (error) {
+        setSubmitError(error.response?.data?.message || 'Failed to create reservation');
+        console.error('Error creating reservation:', error);
+        } finally {
+        setSubmitLoading(false);
+        }
     };
 
     if (loading) {

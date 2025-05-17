@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 const Approval = () => {
     const { user } = useAuth();
@@ -9,92 +10,73 @@ const Approval = () => {
     const [reservations, setReservations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [filter, setFilter] = useState('pending'); // 'pending', 'approved', 'rejected', 'all'
+    const [filter, setFilter] = useState('pending');
     const [actionLoading, setActionLoading] = useState(null);
 
     useEffect(() => {
         // Redirect if not admin
-        // if (user && user.role !== 'admin') {
-        //     navigate('/');
-        //     return;
-        // }
+        if (user && user.role !== 'admin') {
+        navigate('/');
+        return;
+        }
 
-        // if (!user) {
-        //     navigate('/login', { state: { from: '/approval' } });
-        //     return;
-        // }
+        if (!user) {
+        navigate('/login', { state: { from: '/approval' } });
+        return;
+        }
 
-        // Mock function to simulate API call
-        const fetchReservationsMock = () => {
-            // Mock reservation data
-            const mockReservations = [
-                {
-                    id: 1,
-                    userId: 101,
-                    userName: "Jane Doe",
-                    roomId: 201,
-                    roomName: "Ruangan K101",
-                    date: "2025-05-20",
-                    startTime: "09:00",
-                    endTime: "11:00",
-                    purpose: "Rapat Departemen",
-                    attendees: 15,
-                    status: "pending"
-                },
-                {
-                    id: 2,
-                    userId: 102,
-                    userName: "Miyabi Hoshinomi",
-                    roomId: 202,
-                    roomName: "Ruangan S202",
-                    date: "2025-05-21",
-                    startTime: "13:00",
-                    endTime: "15:00",
-                    purpose: "Workshop Coding",
-                    attendees: 25,
-                    status: "approved"
-                },
-                {
-                    id: 3,
-                    userId: 103,
-                    userName: "Ellen",
-                    roomId: 203,
-                    roomName: "Ruangan GK201",
-                    date: "2025-05-22",
-                    startTime: "10:00",
-                    endTime: "12:00",
-                    purpose: "Presentasi Skripsi",
-                    attendees: 8,
-                    status: "rejected"
-                }
-            ];
-
-            // Filter based on status
-            let filteredReservations = mockReservations;
+        const fetchReservations = async () => {
+        try {
+            let endpoint = '/peminjaman';
             if (filter !== 'all') {
-                filteredReservations = mockReservations.filter(res => res.status === filter);
+            endpoint = `/peminjaman/status/${filter}`;
             }
 
-            // Simulate API delay
-            setTimeout(() => {
-                setReservations(filteredReservations);
-                setLoading(false);
-            }, 700);
+            const response = await axios.get(endpoint, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+
+            if (response.data.success) {
+            setReservations(response.data.payload);
+            } else {
+            setError(response.data.message);
+            }
+        } catch (error) {
+            setError('Failed to fetch reservations');
+            console.error('Error fetching reservations:', error);
+        } finally {
+            setLoading(false);
+        }
         };
 
-        fetchReservationsMock();
+        fetchReservations();
     }, [user, navigate, filter]);
 
     const handleAction = async (id, action) => {
         setActionLoading(id);
         
-        // Mock API call
-        setTimeout(() => {
+        try {
+        const response = await axios.put(`/peminjaman/${id}/status`, {
+            status: action,
+            catatan: `Status updated to ${action} by admin`
+        }, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+
+        if (response.data.success) {
+            // Update local state to reflect changes
             setReservations(reservations.map(res => 
-                res.id === id ? { ...res, status: action } : res
+            res.id === id ? { ...res, status: action } : res
             ));
-            setActionLoading(null);
-        }, 700);
+        } else {
+            setError(response.data.message);
+        }
+        } catch (error) {
+        setError('Failed to update reservation status');
+        console.error('Error updating reservation status:', error);
+        } finally {
+        setActionLoading(null);
+        }
     };
 
     const formatDate = (dateString) => {

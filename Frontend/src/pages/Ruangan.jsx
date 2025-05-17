@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 const Ruangan = () => {
     const { buildingId } = useParams();
@@ -9,60 +10,32 @@ const Ruangan = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Mock function to simulate API call
-        const fetchBuildingAndRoomsMock = () => {
-            // Mock building data
-            const mockBuilding = {
-                id: parseInt(buildingId),
-                name: `Gedung ${String.fromCharCode(64 + parseInt(buildingId))}`,
-                location: "Kampus Utama",
-                operationHours: "08:00 - 17:00",
-                manager: "John Doe"
-            };
-
-            // Mock rooms data
-            const mockRooms = [
-                {
-                    id: 101,
-                    buildingId: parseInt(buildingId),
-                    name: `Ruangan ${buildingId}01`,
-                    capacity: 30,
-                    floor: 1,
-                    size: 40,
-                    type: "Kelas",
-                    imageUrl: null
-                },
-                {
-                    id: 102,
-                    buildingId: parseInt(buildingId),
-                    name: `Ruangan ${buildingId}02`,
-                    capacity: 50,
-                    floor: 1,
-                    size: 65,
-                    type: "Laboratorium",
-                    imageUrl: null
-                },
-                {
-                    id: 103,
-                    buildingId: parseInt(buildingId),
-                    name: `Ruangan ${buildingId}03`,
-                    capacity: 20,
-                    floor: 2,
-                    size: 30,
-                    type: "Seminar",
-                    imageUrl: null
-                }
-            ];
-
-            // Simulate API delay
-            setTimeout(() => {
-                setBuilding(mockBuilding);
-                setRooms(mockRooms);
-                setLoading(false);
-            }, 700);
+        const fetchBuildingAndRooms = async () => {
+        try {
+            // Fetch building details
+            const buildingResponse = await axios.get(`/gedung/${buildingId}`);
+            if (!buildingResponse.data.success) {
+            throw new Error(buildingResponse.data.message);
+            }
+            
+            setBuilding(buildingResponse.data.payload);
+            
+            // Fetch rooms for this building
+            const roomsResponse = await axios.get(`/ruangan/gedung/${buildingId}`);
+            if (!roomsResponse.data.success) {
+            throw new Error(roomsResponse.data.message);
+            }
+            
+            setRooms(roomsResponse.data.payload);
+        } catch (error) {
+            setError(error.message || 'Failed to fetch data');
+            console.error('Error fetching data:', error);
+        } finally {
+            setLoading(false);
+        }
         };
 
-        fetchBuildingAndRoomsMock();
+        fetchBuildingAndRooms();
     }, [buildingId]);
 
     if (loading) {

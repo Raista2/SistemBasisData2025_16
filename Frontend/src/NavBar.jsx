@@ -1,9 +1,12 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 
-function NavBar({ user, onLogout }) {
+function NavBar() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
@@ -13,12 +16,17 @@ function NavBar({ user, onLogout }) {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
+    const handleLogout = async () => {
+        await logout();
+        navigate('/login');
+    };
+
     return (
         <nav className="fixed top-0 left-0 right-0 w-full bg-gray-800 text-white p-3 shadow-md z-50 opacity-95 border-b-2 border-blue-100">
             <div className="w-full px-4 flex justify-between items-center">
                 {/* Logo and main navigation */}
                 <div className="flex items-center gap-4">
-                    <Link to="/" className="text-2xl font-bold text-white">Room Reservation</Link>
+                    <Link to="/" className="text-2xl font-bold text-white">PinjamRuang FT UI</Link>
                     
                     {/* Desktop Navigation Links */}
                     <div className="hidden md:flex items-center space-x-4">
@@ -79,11 +87,15 @@ function NavBar({ user, onLogout }) {
                                         <Link 
                                             to="/profile" 
                                             className="block w-full text-left py-2 px-3 hover:bg-gray-600 rounded transition-colors"
+                                            onClick={() => setIsDropdownOpen(false)}
                                         >
                                             Profile
                                         </Link>
                                         <button 
-                                            onClick={onLogout}
+                                            onClick={() => {
+                                                handleLogout();
+                                                setIsDropdownOpen(false);
+                                            }}
                                             className="block w-full text-left py-2 px-3 hover:bg-gray-600 rounded transition-colors mt-1"
                                         >
                                             Logout
@@ -151,7 +163,7 @@ function NavBar({ user, onLogout }) {
                                 </Link>
                                 <button 
                                     onClick={() => {
-                                        onLogout();
+                                        handleLogout();
                                         setIsMobileMenuOpen(false);
                                     }}
                                     className="text-left text-white py-2 px-3 hover:bg-gray-600 rounded w-full"
