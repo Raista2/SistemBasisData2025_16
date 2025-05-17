@@ -1,77 +1,120 @@
 const baseResponse = require('../utils/baseResponse.util');
 const ruanganRepository = require('../repositories/ruangan.repository');
 
-exports.createRuangan = async (req, res) => {
-    const { gedung_id, nama_ruangan, kapasitas, deskripsi } = req.body;
-    if (!gedung_id || !nama_ruangan || !kapasitas) {
-        return baseResponse(res, false, 400, 'Missing required fields', null);
-    }
-
+exports.getAllRuangan = async (req, res) => {
     try {
-        const newRuangan = await ruanganRepository.createRuangan(req.body);
-        baseResponse(res, true, 201, 'Ruangan created', newRuangan);
+        const ruanganList = await ruanganRepository.getAllRuangan();
+        return baseResponse(res, true, 200, 'Ruangan retrieved successfully', ruanganList);
     } catch (error) {
-        baseResponse(res, false, 500, error.message || 'Server Error', null);
+        console.error('Get all ruangan error:', error);
+        return baseResponse(res, false, 500, 'Server error', null);
     }
 };
 
-exports.getAllRuangan = async (req, res) => {
-    try {
-        const ruangan = await ruanganRepository.getAllRuangan();
-        baseResponse(res, true, 200, 'Success', ruangan);
-    } catch (error) {
-        baseResponse(res, false, 500, error.message || 'Server Error', null);
-    }
-}
-
 exports.getRuanganById = async (req, res) => {
-    const { id } = req.params;
-    if (!id) {
-        return baseResponse(res, false, 400, 'Missing required fields', null);
-    }
-
     try {
+        const { id } = req.params;
         const ruangan = await ruanganRepository.getRuanganById(id);
+
         if (!ruangan) {
             return baseResponse(res, false, 404, 'Ruangan not found', null);
         }
-        baseResponse(res, true, 200, 'Success', ruangan);
+
+        return baseResponse(res, true, 200, 'Ruangan retrieved successfully', ruangan);
     } catch (error) {
-        baseResponse(res, false, 500, error.message || 'Server Error', null);
+        console.error('Get ruangan by id error:', error);
+        return baseResponse(res, false, 500, 'Server error', null);
+    }
+};
+
+exports.getRuanganByGedung = async (req, res) => {
+    try {
+        const { gedungId } = req.params;
+        const ruanganList = await ruanganRepository.getRuanganByGedung(gedungId);
+
+        return baseResponse(res, true, 200, 'Ruangan retrieved successfully', ruanganList);
+    } catch (error) {
+        console.error('Get ruangan by gedung error:', error);
+        return baseResponse(res, false, 500, 'Server error', null);
+    }
+};
+
+exports.createRuangan = async (req, res) => {
+    try {
+        const { gedung_id, nama, lantai, kapasitas, luas, tipe, fasilitas, url_gambar } = req.body;
+
+        // Validate input
+        if (!gedung_id || !nama || !lantai || !kapasitas) {
+            return baseResponse(res, false, 400, 'Gedung ID, nama, lantai, and kapasitas are required', null);
+        }
+
+        const newRuangan = await ruanganRepository.createRuangan({
+            gedung_id,
+            nama,
+            lantai,
+            kapasitas,
+            luas,
+            tipe,
+            fasilitas,
+            url_gambar
+        });
+
+        return baseResponse(res, true, 201, 'Ruangan created successfully', newRuangan);
+    } catch (error) {
+        console.error('Create ruangan error:', error);
+        return baseResponse(res, false, 500, 'Server error', null);
     }
 };
 
 exports.updateRuangan = async (req, res) => {
-    const { id } = req.params;
-    const { gedung_id, nama_ruangan, kapasitas, deskripsi } = req.body;
-    if (!id || !gedung_id || !nama_ruangan || !kapasitas) {
-        return baseResponse(res, false, 400, 'Missing required fields', null);
-    }
-
     try {
-        const updatedRuangan = await ruanganRepository.updateRuangan(id, req.body);
-        if (!updatedRuangan) {
+        const { id } = req.params;
+        const { gedung_id, nama, lantai, kapasitas, luas, tipe, fasilitas, url_gambar } = req.body;
+
+        // Validate input
+        if (!gedung_id || !nama || !lantai || !kapasitas) {
+            return baseResponse(res, false, 400, 'Gedung ID, nama, lantai, and kapasitas are required', null);
+        }
+
+        // Check if ruangan exists
+        const existingRuangan = await ruanganRepository.getRuanganById(id);
+        if (!existingRuangan) {
             return baseResponse(res, false, 404, 'Ruangan not found', null);
         }
-        baseResponse(res, true, 200, 'Ruangan updated', updatedRuangan);
+
+        const updatedRuangan = await ruanganRepository.updateRuangan(id, {
+            gedung_id,
+            nama,
+            lantai,
+            kapasitas,
+            luas,
+            tipe,
+            fasilitas,
+            url_gambar
+        });
+
+        return baseResponse(res, true, 200, 'Ruangan updated successfully', updatedRuangan);
     } catch (error) {
-        baseResponse(res, false, 500, error.message || 'Server Error', null);
+        console.error('Update ruangan error:', error);
+        return baseResponse(res, false, 500, 'Server error', null);
     }
-}
+};
 
 exports.deleteRuangan = async (req, res) => {
-    const { id } = req.params;
-    if (!id) {
-        return baseResponse(res, false, 400, 'Missing required fields', null);
-    }
-
     try {
-        const deletedRuangan = await ruanganRepository.deleteRuangan(id);
-        if (!deletedRuangan) {
+        const { id } = req.params;
+
+        // Check if ruangan exists
+        const existingRuangan = await ruanganRepository.getRuanganById(id);
+        if (!existingRuangan) {
             return baseResponse(res, false, 404, 'Ruangan not found', null);
         }
-        baseResponse(res, true, 200, 'Ruangan deleted', deletedRuangan);
+
+        await ruanganRepository.deleteRuangan(id);
+
+        return baseResponse(res, true, 200, 'Ruangan deleted successfully', null);
     } catch (error) {
-        baseResponse(res, false, 500, error.message || 'Server Error', null);
+        console.error('Delete ruangan error:', error);
+        return baseResponse(res, false, 500, 'Server error', null);
     }
 };
