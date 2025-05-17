@@ -11,9 +11,11 @@ import Gedung from './pages/Gedung.jsx'
 import Ruangan from './pages/Ruangan.jsx'
 import Reservation from './pages/Reservation.jsx'
 import Approval from './pages/Approval.jsx'
+import { useAuth } from './context/AuthContext.jsx'
 
 function App() {
   const [count, setCount] = useState(0)
+  const { user, logout } = useAuth()
 
   function HomePage() {
     return (
@@ -44,8 +46,8 @@ function App() {
 
   return (
     <>
-      <NavBar user={null} onLogout={() => {}} />
-      
+      <NavBar user={user} onLogout={logout} />
+
       {/* Define routes*/}
       <Routes>
         <Route path="/" element={<HomePage />} />

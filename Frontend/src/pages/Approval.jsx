@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import PeminjamanService from '../services/PeminjamanService';
 
 const Approval = () => {
     const { user } = useAuth();
@@ -14,87 +15,64 @@ const Approval = () => {
 
     useEffect(() => {
         // Redirect if not admin
-        // if (user && user.role !== 'admin') {
-        //     navigate('/');
-        //     return;
-        // }
+        if (user && user.role !== 'admin') {
+            navigate('/');
+            return;
+        }
 
-        // if (!user) {
-        //     navigate('/login', { state: { from: '/approval' } });
-        //     return;
-        // }
+        if (!user) {
+            navigate('/login', { state: { from: '/approval' } });
+            return;
+        }
 
-        // Mock function to simulate API call
-        const fetchReservationsMock = () => {
-            // Mock reservation data
-            const mockReservations = [
-                {
-                    id: 1,
-                    userId: 101,
-                    userName: "Jane Doe",
-                    roomId: 201,
-                    roomName: "Ruangan K101",
-                    date: "2025-05-20",
-                    startTime: "09:00",
-                    endTime: "11:00",
-                    purpose: "Rapat Departemen",
-                    attendees: 15,
-                    status: "pending"
-                },
-                {
-                    id: 2,
-                    userId: 102,
-                    userName: "Miyabi Hoshinomi",
-                    roomId: 202,
-                    roomName: "Ruangan S202",
-                    date: "2025-05-21",
-                    startTime: "13:00",
-                    endTime: "15:00",
-                    purpose: "Workshop Coding",
-                    attendees: 25,
-                    status: "approved"
-                },
-                {
-                    id: 3,
-                    userId: 103,
-                    userName: "Ellen",
-                    roomId: 203,
-                    roomName: "Ruangan GK201",
-                    date: "2025-05-22",
-                    startTime: "10:00",
-                    endTime: "12:00",
-                    purpose: "Presentasi Skripsi",
-                    attendees: 8,
-                    status: "rejected"
+        const fetchReservations = async () => {
+            try {
+                setLoading(true);
+                let data;
+
+                // Fetch reservations based on filter
+                if (filter === 'all') {
+                    data = await PeminjamanService.getAllPeminjaman();
+                } else {
+                    data = await PeminjamanService.getPeminjamanByStatus(filter);
                 }
-            ];
 
-            // Filter based on status
-            let filteredReservations = mockReservations;
-            if (filter !== 'all') {
-                filteredReservations = mockReservations.filter(res => res.status === filter);
-            }
-
-            // Simulate API delay
-            setTimeout(() => {
-                setReservations(filteredReservations);
+                setReservations(data);
+                setError(null);
+            } catch (err) {
+                console.error('Error fetching reservations:', err);
+                setError('Gagal memuat data reservasi. Silakan coba lagi nanti.');
+            } finally {
                 setLoading(false);
-            }, 700);
+            }
         };
 
-        fetchReservationsMock();
+        fetchReservations();
     }, [user, navigate, filter]);
 
     const handleAction = async (id, action) => {
-        setActionLoading(id);
-        
-        // Mock API call
-        setTimeout(() => {
-            setReservations(reservations.map(res => 
-                res.id === id ? { ...res, status: action } : res
-            ));
+        try {
+            setActionLoading(id);
+            const notes = action === 'approved' 
+                ? 'Reservasi disetujui oleh admin' 
+                : 'Reservasi ditolak oleh admin';
+                
+            await PeminjamanService.updatePeminjamanStatus(id, action, notes);
+            
+            // Refresh data
+            if (filter === 'all') {
+                const updatedData = await PeminjamanService.getAllPeminjaman();
+                setReservations(updatedData);
+            } else {
+                const updatedData = await PeminjamanService.getPeminjamanByStatus(filter);
+                setReservations(updatedData);
+            }
+        } catch (err) {
+            console.error(`Error updating reservation status to ${action}:`, err);
+            alert(`Gagal ${action === 'approved' ? 'menyetujui' : 'menolak'} reservasi. Silakan coba lagi.`);
+        } finally {
             setActionLoading(null);
-        }, 700);
+        }
     };
 
     const formatDate = (dateString) => {

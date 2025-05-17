@@ -31,17 +31,6 @@ const Login = () => {
         }
     };
 
-    // Debug function for development
-    const loginAs = (userType) => {
-        if (userType === 'regular') {
-            setEmail('user@example.com');
-            setPassword('password123');
-        } else if (userType === 'premium') {
-            setEmail('test@test.com');
-            setPassword('test123');
-        }
-    };
-
     return (
         <div className="flex justify-center items-center min-h-screen">
             <div className="w-full max-w-md bg-white bg-opacity-90 rounded-lg shadow-lg p-8">
