@@ -11,23 +11,31 @@ import Gedung from './pages/Gedung.jsx'
 import Ruangan from './pages/Ruangan.jsx'
 import Reservation from './pages/Reservation.jsx'
 import Approval from './pages/Approval.jsx'
+import { useAuth } from './context/AuthContext.jsx'
 import Layout from "./pages/BackgroundLayout.jsx"
 
 function App() {
   const [count, setCount] = useState(0)
+  const { user, logout } = useAuth()
 
   function HomePage() {
     return (
-      <div className="pt-16 p-4 md:p-10 lg:p-20 max-w-4xl mx-auto">
-        <div className="text-3xl text-left text-black font-bold">Selamat Datang Di Room Reservation</div>
+      <div className="pt-16 flex justify-center items-center">
+        <div className="card p-4 font-bold text-white">
+          <p>Selamat Datang Di Room Reservation!</p>
+          <h1>Pinjam Ruang Di FTUI</h1>
+        </div>
+        <p className="card font-bold bg-white text-black shadow-md rounded-md">
+          Untuk bisa mulai pinjam ruang, registrasi/login akun terlebih dahulu lewat navbar di atas.
+        </p>
       </div>
     )
   }
 
   return (
-    <div >
-      <NavBar user={null} onLogout={() => {}} />
-      
+    <>
+      <NavBar user={user} onLogout={logout} />
+
       {/* Define routes*/}
       <Routes>
         <Route element={<Layout />}>
@@ -39,9 +47,9 @@ function App() {
           <Route path="/reservation/:roomId" element={<Reservation />} />
           <Route path="/approval" element={<Approval />} />
           <Route path="/map" element={<Map />} />
-          </Route>
+        </Route>
       </Routes>
-    </div>
+    </>
   )
 }
 

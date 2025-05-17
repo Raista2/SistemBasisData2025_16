@@ -1,85 +1,129 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
+import RuanganService from '../services/RuanganService';
+import PeminjamanService from '../services/PeminjamanService';
 
 const Reservation = () => {
     const { roomId } = useParams();
-    const { user } = useAuth();
     const navigate = useNavigate();
-
+    const { user } = useAuth();
+    
     const [room, setRoom] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [submitLoading, setSubmitLoading] = useState(false);
-    const [submitError, setSubmitError] = useState(null);
-    const [submitSuccess, setSubmitSuccess] = useState(false);
-
-    // Form states
+    
+    // Form state
+    const [date, setDate] = useState('');
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
     const [purpose, setPurpose] = useState('');
     const [attendees, setAttendees] = useState('');
-    const [date, setDate] = useState(new Date());
-    const [startTime, setStartTime] = useState('08:00');
-    const [endTime, setEndTime] = useState('10:00');
     const [notes, setNotes] = useState('');
+    
+    // Form submission state
+    const [submitLoading, setSubmitLoading] = useState(false);
+    const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [submitError, setSubmitError] = useState(null);
+    const [conflicts, setConflicts] = useState([]);
 
-    // Get room details
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    
     useEffect(() => {
-        // Mock function to simulate API call
-        const fetchRoomDetailsMock = () => {
-            // Mock room data
-            const mockRoom = {
-                id: parseInt(roomId),
-                buildingId: 1,
-                buildingName: "Gedung A",
-                name: `Ruangan ${roomId}`,
-                capacity: 40,
-                floor: 2,
-                size: 50,
-                type: "Kelas",
-                facilities: "Proyektor, AC, Whiteboard",
-                imageUrl: null
-            };
-
-            // Simulate API delay
-            setTimeout(() => {
-                setRoom(mockRoom);
+        if (!user) {
+            navigate('/login', { state: { from: `/reservation/${roomId}` } });
+            return;
+        }
+        
+        const fetchRoom = async () => {
+            try {
+                setLoading(true);
+                const roomData = await RuanganService.getRuanganById(roomId);
+                setRoom(roomData);
+                setError(null);
+            } catch (err) {
+                console.error('Error fetching room details:', err);
+                setError('Gagal memuat detail ruangan. Silakan coba lagi nanti.');
+            } finally {
                 setLoading(false);
-            }, 700);
+            }
         };
-
-        fetchRoomDetailsMock();
-    }, [roomId]);
-
-    // Redirect to login if not authenticated
-    // useEffect(() => {
-    //     if (!user) {
-    //         navigate('/login', { state: { from: `/reservation/${roomId}` } });
-    //     }
-    // }, [user, navigate, roomId]);
+        
+        fetchRoom();
+    }, [roomId, navigate, user]);
+    
+    const checkConflicts = async () => {
+        if (!date || !startTime || !endTime) return false;
+        
+        try {
+            const conflictingReservations = await PeminjamanService.checkConflicts(
+                roomId, date, startTime, endTime
+            );
+            
+            setConflicts(conflictingReservations);
+            return conflictingReservations.length > 0;
+        } catch (err) {
+            console.error('Error checking conflicts:', err);
+            return false;
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitLoading(true);
-        setSubmitError(null);
-
-        // Mock submission
-        setTimeout(() => {
+        
+        try {
+            setSubmitLoading(true);
+            setSubmitError(null);
+            
+            // Validate form
+            if (!date || !startTime || !endTime || !purpose || !attendees) {
+                setSubmitError('Semua field harus diisi.');
+                return;
+            }
+            
+            // Check for conflicts
+            const hasConflicts = await checkConflicts();
+            if (hasConflicts) {
+                setSubmitError('Ruangan sudah direservasi pada waktu tersebut. Silakan pilih waktu lain.');
+                return;
+            }
+            
+            // Create reservation
+            const reservationData = {
+                ruangan_id: roomId,
+                tanggal: date,
+                waktu_mulai: startTime,
+                waktu_selesai: endTime,
+                keperluan: purpose,
+                jumlah_peserta: parseInt(attendees),
+                catatan: notes || null
+            };
+            
+            await PeminjamanService.createPeminjaman(reservationData);
+            
+            // Show success message
             setSubmitSuccess(true);
+            
             // Reset form
+            setDate('');
+            setStartTime('');
+            setEndTime('');
             setPurpose('');
             setAttendees('');
-            setDate(new Date());
-            setStartTime('08:00');
-            setEndTime('10:00');
             setNotes('');
-            setSubmitLoading(false);
-
+            
+            // Redirect after 2 seconds
             setTimeout(() => {
-                navigate('/my-reservations');
+                navigate('/approval');
             }, 2000);
-        }, 1000);
+            
+        } catch (err) {
+            console.error('Error creating reservation:', err);
+            setSubmitError('Gagal membuat reservasi. Silakan coba lagi.');
+        } finally {
+            setSubmitLoading(false);
+        }
     };
 
     if (loading) {
@@ -101,7 +145,7 @@ const Reservation = () => {
     }
 
     return (
-        <div className="pt-16 container mx-auto px-4 py-8 md:p-10 lg:p-20">
+        <div className="pt-16 container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-3xl font-bold mb-6 text-black">Reservasi Ruangan</h1>
 
@@ -118,40 +162,46 @@ const Reservation = () => {
                 )}
 
                 <div className="bg-white rounded-lg shadow-md p-6 mb-8 text-black">
-                    <div className="flex flex-wrap">
-                        <div className="w-full md:w-1/3 pr-4">
-                            {room?.imageUrl ? (
-                                <img
-                                    src={room.imageUrl}
-                                    alt={`Ruangan ${room.name}`}
-                                    className="w-full h-48 object-cover rounded-lg"
-                                />
-                            ) : (
-                                <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                                    No Image Available
-                                </div>
-                            )}
+                    <h2 className="text-xl font-bold mb-4">Detail Ruangan</h2>
+                    <div className="flex flex-col md:flex-row">
+                        <div className="md:w-1/3 mb-4 md:mb-0">
+                            <div className="h-48 bg-gray-200 rounded-lg overflow-hidden">
+                                {room.imageUrl ? (
+                                    <img
+                                        src={room.imageUrl}
+                                        alt={room.name}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-gray-500">
+                                        No Image Available
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        <div className="w-full md:w-2/3 mt-4 md:mt-0">
-                            <h2 className="text-2xl font-bold">{room?.name}</h2>
-                            <p className="text-gray-600 mb-4">{room?.buildingName}, Lantai {room?.floor}</p>
-
-                            <div className="grid grid-cols-2 gap-y-2">
+                        <div className="md:w-2/3 md:pl-6">
+                            <h3 className="text-lg font-bold mb-2">{room.name}</h3>
+                            <p className="text-gray-600 mb-4">{room.buildingName}</p>
+                            <div className="grid grid-cols-2 gap-y-2 text-sm">
                                 <div>
                                     <span className="text-gray-700 font-semibold">Kapasitas:</span>
-                                    <span className="ml-2">{room?.capacity} orang</span>
+                                    <span className="ml-2">{room.capacity} orang</span>
+                                </div>
+                                <div>
+                                    <span className="text-gray-700 font-semibold">Lantai:</span>
+                                    <span className="ml-2">{room.floor}</span>
                                 </div>
                                 <div>
                                     <span className="text-gray-700 font-semibold">Luas:</span>
-                                    <span className="ml-2">{room?.size} m²</span>
+                                    <span className="ml-2">{room.size} m²</span>
                                 </div>
                                 <div>
                                     <span className="text-gray-700 font-semibold">Tipe:</span>
-                                    <span className="ml-2">{room?.type}</span>
+                                    <span className="ml-2">{room.type}</span>
                                 </div>
                                 <div>
                                     <span className="text-gray-700 font-semibold">Fasilitas:</span>
-                                    <span className="ml-2">{room?.facilities || "N/A"}</span>
+                                    <span className="ml-2">{room.facilities || "N/A"}</span>
                                 </div>
                             </div>
                         </div>
@@ -167,68 +217,52 @@ const Reservation = () => {
                                 Keperluan
                             </label>
                             <input
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 type="text"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 id="purpose"
                                 value={purpose}
                                 onChange={(e) => setPurpose(e.target.value)}
+                                placeholder="Masukkan keperluan reservasi"
                                 required
-                                placeholder="Contoh: Rapat Organisasi, Bimbingan Skripsi, dll"
                             />
                         </div>
 
-                        {/* Rest of the form fields remain the same */}
                         <div className="mb-4">
-                            <label className="block text-gray-700 font-bold mb-2" htmlFor="attendees">
-                                Jumlah Peserta
+                            <label className="block text-gray-700 font-bold mb-2" htmlFor="date">
+                                Tanggal
                             </label>
                             <input
+                                type="date"
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                type="number"
-                                id="attendees"
-                                value={attendees}
-                                onChange={(e) => setAttendees(e.target.value)}
+                                id="date"
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                                min={today}
                                 required
-                                min="1"
-                                max={room?.capacity}
-                                placeholder={`Max: ${room?.capacity} orang`}
                             />
                         </div>
 
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-bold mb-2">
-                                Tanggal Reservasi
-                            </label>
-                            <DatePicker
-                                selected={date}
-                                onChange={(date) => setDate(date)}
-                                dateFormat="dd/MM/yyyy"
-                                minDate={new Date()}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        <div className="flex flex-wrap -mx-2 mb-4">
-                            <div className="w-full md:w-1/2 px-2 mb-4 md:mb-0">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
                                 <label className="block text-gray-700 font-bold mb-2" htmlFor="startTime">
                                     Waktu Mulai
                                 </label>
                                 <input
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     type="time"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     id="startTime"
                                     value={startTime}
                                     onChange={(e) => setStartTime(e.target.value)}
                                     required
                                 />
                             </div>
-                            <div className="w-full md:w-1/2 px-2">
+                            <div>
                                 <label className="block text-gray-700 font-bold mb-2" htmlFor="endTime">
                                     Waktu Selesai
                                 </label>
                                 <input
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     type="time"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     id="endTime"
                                     value={endTime}
                                     onChange={(e) => setEndTime(e.target.value)}
@@ -238,8 +272,25 @@ const Reservation = () => {
                         </div>
 
                         <div className="mb-4">
+                            <label className="block text-gray-700 font-bold mb-2" htmlFor="attendees">
+                                Jumlah Peserta
+                            </label>
+                            <input
+                                type="number"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                id="attendees"
+                                value={attendees}
+                                onChange={(e) => setAttendees(e.target.value)}
+                                min="1"
+                                max={room.capacity}
+                                required
+                            />
+                            <p className="text-sm text-gray-600 mt-1">Maksimum {room.capacity} orang</p>
+                        </div>
+
+                        <div className="mb-6">
                             <label className="block text-gray-700 font-bold mb-2" htmlFor="notes">
-                                Catatan Tambahan (Opsional)
+                                Catatan (Optional)
                             </label>
                             <textarea
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

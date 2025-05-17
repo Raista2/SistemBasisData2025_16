@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import GedungService from '../services/GedungService';
 
 const Gedung = () => {
     const [buildings, setBuildings] = useState([]);
@@ -7,41 +8,20 @@ const Gedung = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Mock function to simulate API call
-        const fetchBuildingsMock = () => {
-            // Mock data
-            const mockBuildings = [
-                {
-                    id: 1,
-                    name: "Gedung S",
-                    location: "Dimana ya",
-                    roomCount: 15,
-                    operationHours: "08:00 - 17:00"
-                },
-                {
-                    id: 2,
-                    name: "Gedung K",
-                    location: "Di FT",
-                    roomCount: 10,
-                    operationHours: "08:00 - 20:00"
-                },
-                {
-                    id: 3,
-                    name: "Gedung GK",
-                    location: "Depannya G Belakangnya K",
-                    roomCount: 8,
-                    operationHours: "08:00 - 16:00"
-                }
-            ];
-
-            // Simulate API delay
-            setTimeout(() => {
-                setBuildings(mockBuildings);
+        const fetchBuildings = async () => {
+            try {
+                setLoading(true);
+                const data = await GedungService.getAllGedung();
+                setBuildings(data);
+            } catch (err) {
+                setError('Failed to load buildings. Please try again later.');
+                console.error(err);
+            } finally {
                 setLoading(false);
-            }, 700);
+            }
         };
 
-        fetchBuildingsMock();
+        fetchBuildings();
     }, []);
 
     if (loading) {
@@ -63,7 +43,7 @@ const Gedung = () => {
     }
 
     return (
-        <div className="pt-16 container mx-auto px-4 py-8 md:p-10 lg:p-20">
+        <div className="pt-16 container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-6 text-black">Daftar Gedung</h1>
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden text-black">

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import GedungService from '../services/GedungService';
+import RuanganService from '../services/RuanganService';
 
 const Ruangan = () => {
     const { buildingId } = useParams();
@@ -9,60 +11,29 @@ const Ruangan = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Mock function to simulate API call
-        const fetchBuildingAndRoomsMock = () => {
-            // Mock building data
-            const mockBuilding = {
-                id: parseInt(buildingId),
-                name: `Gedung ${String.fromCharCode(64 + parseInt(buildingId))}`,
-                location: "Kampus Utama",
-                operationHours: "08:00 - 17:00",
-                manager: "John Doe"
-            };
-
-            // Mock rooms data
-            const mockRooms = [
-                {
-                    id: 101,
-                    buildingId: parseInt(buildingId),
-                    name: `Ruangan ${buildingId}01`,
-                    capacity: 30,
-                    floor: 1,
-                    size: 40,
-                    type: "Kelas",
-                    imageUrl: null
-                },
-                {
-                    id: 102,
-                    buildingId: parseInt(buildingId),
-                    name: `Ruangan ${buildingId}02`,
-                    capacity: 50,
-                    floor: 1,
-                    size: 65,
-                    type: "Laboratorium",
-                    imageUrl: null
-                },
-                {
-                    id: 103,
-                    buildingId: parseInt(buildingId),
-                    name: `Ruangan ${buildingId}03`,
-                    capacity: 20,
-                    floor: 2,
-                    size: 30,
-                    type: "Seminar",
-                    imageUrl: null
-                }
-            ];
-
-            // Simulate API delay
-            setTimeout(() => {
-                setBuilding(mockBuilding);
-                setRooms(mockRooms);
+        const fetchBuildingAndRooms = async () => {
+            try {
+                setLoading(true);
+                // Fetch building and rooms data in parallel
+                const [buildingData, roomsData] = await Promise.all([
+                    GedungService.getGedungById(buildingId),
+                    RuanganService.getRuanganByGedung(buildingId)
+                ]);
+                
+                console.log('Building data from API:', buildingData); // Untuk debugging
+                
+                setBuilding(buildingData);
+                setRooms(roomsData);
+                setError(null);
+            } catch (err) {
+                console.error('Error fetching building and rooms:', err);
+                setError('Gagal memuat data gedung dan ruangan. Silakan coba lagi nanti.');
+            } finally {
                 setLoading(false);
-            }, 700);
+            }
         };
 
-        fetchBuildingAndRoomsMock();
+        fetchBuildingAndRooms();
     }, [buildingId]);
 
     if (loading) {
@@ -84,7 +55,7 @@ const Ruangan = () => {
     }
 
     return (
-        <div className="pt-16 container mx-auto px-4 py-8 md:p-10 lg:p-20">
+        <div className="pt-16 container mx-auto px-4 py-8">
             <div className="flex items-center mb-6">
                 <Link to="/gedung" className="text-blue-600 hover:underline mr-2">
                     &larr; Kembali ke Daftar Gedung
@@ -94,23 +65,23 @@ const Ruangan = () => {
             <div className="bg-white rounded-lg shadow-md p-6 mb-8 text-black">
                 <h1 className="text-3xl font-bold mb-2">{building?.name}</h1>
                 <p className="text-gray-600 mb-4">{building?.location}</p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-black grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <span className="text-gray-700 font-semibold">Jam Operasional:</span>
-                        <span className="ml-2">{building?.operationHours}</span>
+                        <span className="ml-2">{building?.jam_operasional || building?.operationHours || "N/A"}</span>
                     </div>
                     <div>
                         <span className="text-gray-700 font-semibold">Jumlah Ruangan:</span>
-                        <span className="ml-2">{rooms.length}</span>
+                        <span className="ml-2">{building?.jumlah_ruangan || rooms.length}</span>
                     </div>
                     <div>
                         <span className="text-gray-700 font-semibold">Pengelola:</span>
-                        <span className="ml-2">{building?.manager || "N/A"}</span>
+                        <span className="ml-2">{building?.pengelola || building?.manager || "N/A"}</span>
                     </div>
                 </div>
             </div>
 
-            <h2 className="text-2xl font-bold mb-4 text-black">Daftar Ruangan</h2>
+            <h2 className="text-2xl font-bold mb-4">Daftar Ruangan</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {rooms.map((room) => (

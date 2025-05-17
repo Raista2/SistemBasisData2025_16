@@ -14,7 +14,7 @@ function NavBar({ user, onLogout }) {
     };
 
     return (
-        <nav className="fixed top-0 left-0 right-0 w-full bg-gray-800 text-white p-3 shadow-md z-50 opacity-95 border-b-2 border-blue-100">
+        <nav className="fixed top-0 left-0 right-0 w-full bg-gray-800 text-white p-3 shadow-md z-50 border-b-2 border-blue-100">
             <div className="w-full px-4 flex justify-between items-center">
                 {/* Logo and main navigation */}
                 <div className="flex items-center gap-4">

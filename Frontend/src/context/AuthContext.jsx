@@ -1,59 +1,103 @@
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import AuthService from '../services/AuthService';
 
 // Get API base URL from environment variables
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
-// Create axios instance with default config
-const api = axios.create({
+// Create axios instance
+export const apiClient = axios.create({
     baseURL: API_BASE_URL,
     headers: {
-        'Content-Type': 'application/json'
-    }
+        'Content-Type': 'application/json',
+    },
 });
 
-const AuthContext = createContext();
+// Create the Auth Context
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // Configure axios interceptors when auth state changes
     useEffect(() => {
-        // Check localStorage for user data on initial load
-        const storedUser = localStorage.getItem('fgoUser');
-        if (storedUser) {
-            try {
-                setUser(JSON.parse(storedUser));
-            } catch (error) {
-                console.error('Failed to parse stored user:', error);
-                localStorage.removeItem('fgoUser');
+        // Interceptor for adding auth token to requests
+        const requestInterceptor = apiClient.interceptors.request.use(
+            (config) => {
+                if (user?.token) {
+                    config.headers.Authorization = `Bearer ${user.token}`;
+                }
+                return config;
+            },
+            (error) => Promise.reject(error)
+        );
+
+        // Interceptor for handling auth-related responses
+        const responseInterceptor = apiClient.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                // Handle 401 Unauthorized errors
+                if (error.response?.status === 401) {
+                    // Only logout if we have a user and we're not already on the login page
+                    if (user && window.location.pathname !== '/login') {
+                        console.log('Session expired. Logging out...');
+                        logout();
+                        window.location.href = '/login';
+                    }
+                }
+                return Promise.reject(error);
             }
+        );
+
+        // Clean up interceptors when component unmounts or user changes
+        return () => {
+            apiClient.interceptors.request.eject(requestInterceptor);
+            apiClient.interceptors.response.eject(responseInterceptor);
+        };
+    }, [user]);
+
+    // Load user from localStorage on initial render
+    useEffect(() => {
+        try {
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                setUser(JSON.parse(storedUser));
+            }
+        } catch (error) {
+            console.error('Error loading user from localStorage:', error);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     }, []);
 
     const updateUserData = (updatedUserData) => {
-        // Update state
         setUser(updatedUserData);
-
-        // Update localStorage
         if (updatedUserData) {
-            localStorage.setItem('fgoUser', JSON.stringify(updatedUserData));
+            localStorage.setItem('user', JSON.stringify(updatedUserData));
         } else {
-            localStorage.removeItem('fgoUser');
+            localStorage.removeItem('user');
         }
     };
 
     const login = async (email, password) => {
         try {
-            const response = await api.post('/auth/login', { email, password });
-
-            // Store user in localStorage for persistence
-            localStorage.setItem('fgoUser', JSON.stringify(response.data.user));
-
-            // Update state
-            setUser(response.data.user);
-
+            // Use AuthService which now uses the apiClient from this file
+            const response = await AuthService.login({ email, password });
+            
+            if (!response.success) {
+                return { success: false, message: response.message };
+            }
+            
+            // Store user data with token
+            const userData = {
+                ...response.payload.user,
+                token: response.payload.token
+            };
+            
+            localStorage.setItem('user', JSON.stringify(userData));
+            setUser(userData);
+            
             return { success: true };
         } catch (error) {
             console.error('Login error:', error);
@@ -66,8 +110,8 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (username, email, password) => {
         try {
-            const response = await api.post('/auth/register', { username, email, password });
-            return { success: true };
+            const response = await AuthService.register({ username, email, password });
+            return { success: response.success, message: response.message };
         } catch (error) {
             console.error('Registration error:', error);
             return {
@@ -77,9 +121,15 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem('fgoUser');
-        setUser(null);
+    const logout = async () => {
+        try {
+            await AuthService.logout();
+        } catch (error) {
+            console.error('Logout error:', error);
+        } finally {
+            localStorage.removeItem('user');
+            setUser(null);
+        }
     };
 
     return (
@@ -105,5 +155,4 @@ export const useAuth = () => {
     return context;
 };
 
-// Export the axios instance for use in other components
-export const apiClient = api;
+export default AuthContext;
