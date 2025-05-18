@@ -9,6 +9,8 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [adminCode, setAdminCode] = useState('');
     const navigate = useNavigate();
     const { register } = useAuth();
 
@@ -25,7 +27,8 @@ const Register = () => {
         setLoading(true);
 
         try {
-            const result = await register(username, email, password);
+            // Pass isAdmin and adminCode to register function
+            const result = await register(username, email, password, isAdmin, adminCode);
             
             if (!result.success) {
                 setError(result.message);
@@ -98,7 +101,7 @@ const Register = () => {
                         />
                     </div>
                     
-                    <div className="mb-6">
+                    <div className="mb-4">
                         <label className="block text-gray-700 font-bold mb-2" htmlFor="confirmPassword">
                             Confirm Password
                         </label>
@@ -112,6 +115,41 @@ const Register = () => {
                             placeholder="••••••••"
                         />
                     </div>
+                    
+                    <div className="mb-4">
+                        <div className="flex items-center">
+                            <input
+                                type="checkbox"
+                                id="isAdmin"
+                                checked={isAdmin}
+                                onChange={(e) => setIsAdmin(e.target.checked)}
+                                className="mr-2"
+                            />
+                            <label className="text-gray-700 font-bold" htmlFor="isAdmin">
+                                Register as Admin
+                            </label>
+                        </div>
+                    </div>
+                    
+                    {isAdmin && (
+                        <div className="mb-6">
+                            <label className="block text-gray-700 font-bold mb-2" htmlFor="adminCode">
+                                Admin Registration Code
+                            </label>
+                            <input
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                type="password"
+                                id="adminCode"
+                                value={adminCode}
+                                onChange={(e) => setAdminCode(e.target.value)}
+                                required={isAdmin}
+                                placeholder="Enter admin registration code"
+                            />
+                            <p className="text-sm text-gray-600 mt-1">
+                                This code is required to register as an admin
+                            </p>
+                        </div>
+                    )}
                     
                     <button
                         className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}

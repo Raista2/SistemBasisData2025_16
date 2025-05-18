@@ -2,10 +2,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const baseResponse = require('../utils/baseResponse.util');
 const authRepository = require('../repositories/auth.repository');
+require('dotenv').config();
 
 exports.register = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, isAdmin, adminCode } = req.body;
 
         // Validate input
         if (!username || !email || !password) {
@@ -18,6 +19,21 @@ exports.register = async (req, res) => {
             return baseResponse(res, false, 409, 'User with this email already exists', null);
         }
 
+        // Admin verification
+        let role = 'user';
+        if (isAdmin) {
+            // Check if admin code is provided and matches the secret
+            if (!adminCode) {
+                return baseResponse(res, false, 400, 'Admin registration code is required', null);
+            }
+            
+            if (adminCode !== process.env.ADMIN_REGISTRATION_SECRET) {
+                return baseResponse(res, false, 403, 'Invalid admin registration code', null);
+            }
+            
+            role = 'admin';
+        }
+
         // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -27,7 +43,7 @@ exports.register = async (req, res) => {
             username,
             email,
             password: hashedPassword,
-            role: 'user'
+            role
         });
 
         // Remove password from response

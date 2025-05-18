@@ -11,7 +11,30 @@ import Gedung from './pages/Gedung.jsx'
 import Ruangan from './pages/Ruangan.jsx'
 import Reservation from './pages/Reservation.jsx'
 import Approval from './pages/Approval.jsx'
+import AdminDashboard from './pages/AdminDasboard.jsx'
 import { useAuth } from './context/AuthContext.jsx'
+import MyReservations from './pages/MyReservations.jsx'
+import ReservationLanding from './pages/ReservationLanding.jsx'
+import Profile from './pages/Profile.jsx'
+
+const ProtectedRoute = ({ children, requiredRole }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div className="pt-16 flex justify-center items-center h-screen">Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (requiredRole && user.role !== requiredRole) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -55,9 +78,37 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/gedung" element={<Gedung />} />
         <Route path="/ruangan/:buildingId" element={<Ruangan />} />
-        <Route path="/reservation/:roomId" element={<Reservation />} />
-        <Route path="/approval" element={<Approval />} />
+        <Route path="/reservation/:roomId" element={
+          <ProtectedRoute>
+            <Reservation />
+          </ProtectedRoute>
+        } />
+        <Route path="/approval" element={
+          <ProtectedRoute requiredRole="admin">
+            <Approval />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/dashboard" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
         <Route path="/map" element={<Map />} />
+        <Route path="/my-reservations" element={
+          <ProtectedRoute>
+            <MyReservations />
+          </ProtectedRoute>
+        } />
+        <Route path="/reservation" element={
+          <ProtectedRoute>
+            <ReservationLanding />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
       </Routes>
     </>
   )

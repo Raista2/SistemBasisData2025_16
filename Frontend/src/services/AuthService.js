@@ -39,6 +39,16 @@ const AuthService = {
             console.error('Error fetching current user:', error);
             throw error;
         }
+    },
+
+    updateUser: async (userData) => {
+        try {
+            const response = await apiClient.put('/auth/user', userData);
+            return response.data;
+        } catch (error) {
+            console.error('API Update user error:', error);
+            throw error;
+        }
     }
 };
 
