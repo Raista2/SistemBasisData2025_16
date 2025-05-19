@@ -26,11 +26,11 @@ exports.register = async (req, res) => {
             if (!adminCode) {
                 return baseResponse(res, false, 400, 'Admin registration code is required', null);
             }
-            
+
             if (adminCode !== process.env.ADMIN_REGISTRATION_SECRET) {
                 return baseResponse(res, false, 403, 'Invalid admin registration code', null);
             }
-            
+
             role = 'admin';
         }
 
@@ -92,8 +92,14 @@ exports.login = async (req, res) => {
         // Remove password from response
         delete user.password;
 
+        const userResponse = {
+            ...user,
+            createdAt: user.created_at,
+            updatedAt: user.updated_at
+        };
+
         return baseResponse(res, true, 200, 'Login successful', {
-            user,
+            user: userResponse,
             token
         });
     } catch (error) {
@@ -115,6 +121,12 @@ exports.getCurrentUser = async (req, res) => {
 
         // Remove password from response
         delete user.password;
+
+        const userResponse = {
+            ...user,
+            createdAt: user.created_at,
+            updatedAt: user.updated_at
+        };
 
         return baseResponse(res, true, 200, 'Current user retrieved successfully', user);
     } catch (error) {

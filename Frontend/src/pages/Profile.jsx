@@ -11,7 +11,7 @@ const Profile = () => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    
+
     const [editMode, setEditMode] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -40,7 +40,7 @@ const Profile = () => {
                 username,
                 email
             });
-            
+
             setSuccess('Profil berhasil diperbarui');
             setEditMode(false);
         } catch (err) {
@@ -69,7 +69,7 @@ const Profile = () => {
                 currentPassword,
                 newPassword
             });
-            
+
             setSuccess('Password berhasil diubah');
             setPasswordChangeMode(false);
             setCurrentPassword('');
@@ -178,9 +178,8 @@ const Profile = () => {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className={`px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 ${
-                                            loading ? 'opacity-70 cursor-not-allowed' : ''
-                                        }`}
+                                        className={`px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 ${loading ? 'opacity-70 cursor-not-allowed' : ''
+                                            }`}
                                     >
                                         {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
                                     </button>
@@ -204,8 +203,8 @@ const Profile = () => {
                                     <div>
                                         <p className="text-sm text-gray-500">Bergabung pada</p>
                                         <p className="font-medium">
-                                            {user.createdAt 
-                                                ? new Date(user.createdAt).toLocaleDateString('id-ID', {
+                                            {(user.createdAt || user.created_at)
+                                                ? new Date(user.createdAt || user.created_at).toLocaleDateString('id-ID', {
                                                     day: 'numeric',
                                                     month: 'long',
                                                     year: 'numeric'
@@ -214,7 +213,21 @@ const Profile = () => {
                                             }
                                         </p>
                                     </div>
-                                </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500">Terakhir diperbarui</p>
+                                        <p className="font-medium">
+                                            {(user.updatedAt || user.updated_at)
+                                                ? new Date(user.updatedAt || user.updated_at).toLocaleDateString('id-ID', {
+                                                    day: 'numeric',
+                                                    month: 'long',
+                                                    year: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                })
+                                                : 'N/A'
+                                            }
+                                        </p>
+                                    </div>                                </div>
                             </div>
                         )}
                     </div>
@@ -289,9 +302,8 @@ const Profile = () => {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className={`px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 ${
-                                            loading ? 'opacity-70 cursor-not-allowed' : ''
-                                        }`}
+                                        className={`px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 ${loading ? 'opacity-70 cursor-not-allowed' : ''
+                                            }`}
                                     >
                                         {loading ? 'Menyimpan...' : 'Ubah Password'}
                                     </button>
@@ -300,7 +312,7 @@ const Profile = () => {
                         ) : (
                             <div className="mt-4 text-black">
                                 <p className="text-gray-600">
-                                    Terakhir diubah: {user.passwordUpdatedAt 
+                                    Terakhir diubah: {user.passwordUpdatedAt
                                         ? new Date(user.passwordUpdatedAt).toLocaleDateString('id-ID', {
                                             day: 'numeric',
                                             month: 'long',
@@ -320,7 +332,7 @@ const Profile = () => {
                         <div className="bg-blue-50 p-4 rounded-lg">
                             <h3 className="font-bold text-lg text-blue-700 mb-2">Total Reservasi</h3>
                             <p className="text-3xl font-bold">{user.totalReservations || 0}</p>
-                            <button 
+                            <button
                                 onClick={() => navigate('/my-reservations')}
                                 className="mt-2 text-blue-600 hover:text-blue-800 text-sm"
                             >
@@ -330,7 +342,7 @@ const Profile = () => {
                         <div className="bg-green-50 p-4 rounded-lg">
                             <h3 className="font-bold text-lg text-green-700 mb-2">Reservasi Disetujui</h3>
                             <p className="text-3xl font-bold">{user.approvedReservations || 0}</p>
-                            <button 
+                            <button
                                 onClick={() => navigate('/my-reservations?status=approved')}
                                 className="mt-2 text-green-600 hover:text-green-800 text-sm"
                             >
