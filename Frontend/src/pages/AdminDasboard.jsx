@@ -127,19 +127,19 @@ const AdminDashboard = () => {
 
     if (loading && reservations.length === 0) {
         return (
-            <div className="flex justify-center items-center min-h-[calc(100vh-64px)] pt-16">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+            <div className="flex justify-center items-center min-h-[calc(100vh-64px)] pt-16 bg-white">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue"></div>
             </div>
         );
     }
 
     return (
-        <div className="pt-16 container mx-auto px-4 py-8">
+        <div className="pt-16 container mx-auto px-4 py-8 bg-white text-gray-800">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-                <h1 className="text-3xl font-bold mb-4 md:mb-0">Dashboard Admin</h1>
+                <h1 className="text-3xl font-bold mb-4 md:mb-0 text-primary-blue">Dashboard Admin</h1>
                 <div className="flex space-x-2">
                     <button 
-                        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                        className="text-primary-blue font-medium px-4 py-2 hover:bg-primary-blue hover:text-white transition-colors rounded"
                         onClick={() => navigate('/gedung')}
                     >
                         Kelola Gedung
@@ -157,40 +157,40 @@ const AdminDashboard = () => {
             <div className="border-b border-gray-200 mb-6">
                 <nav className="flex flex-wrap -mb-px">
                     <button
-                        className={`py-4 px-6 font-medium text-sm ${
+                        className={`py-4 px-6 font-medium text-sm transition-colors hover:bg-primary-blue hover:text-white rounded-t ${
                             activeTab === 'pending'
-                                ? 'border-b-2 border-blue-600 text-blue-600'
-                                : 'text-gray-500 hover:text-gray-700'
+                                ? 'border-b-2 border-primary-blue text-primary-blue'
+                                : 'text-gray-500'
                         }`}
                         onClick={() => setActiveTab('pending')}
                     >
                         Menunggu Persetujuan
                     </button>
                     <button
-                        className={`py-4 px-6 font-medium text-sm ${
+                        className={`py-4 px-6 font-medium text-sm transition-colors hover:bg-primary-blue hover:text-white rounded-t ${
                             activeTab === 'approved'
-                                ? 'border-b-2 border-blue-600 text-blue-600'
-                                : 'text-gray-500 hover:text-gray-700'
+                                ? 'border-b-2 border-primary-blue text-primary-blue'
+                                : 'text-gray-500'
                         }`}
                         onClick={() => setActiveTab('approved')}
                     >
                         Disetujui
                     </button>
                     <button
-                        className={`py-4 px-6 font-medium text-sm ${
+                        className={`py-4 px-6 font-medium text-sm transition-colors hover:bg-primary-blue hover:text-white rounded-t ${
                             activeTab === 'rejected'
-                                ? 'border-b-2 border-blue-600 text-blue-600'
-                                : 'text-gray-500 hover:text-gray-700'
+                                ? 'border-b-2 border-primary-blue text-primary-blue'
+                                : 'text-gray-500'
                         }`}
                         onClick={() => setActiveTab('rejected')}
                     >
                         Ditolak
                     </button>
                     <button
-                        className={`py-4 px-6 font-medium text-sm ${
+                        className={`py-4 px-6 font-medium text-sm transition-colors hover:bg-primary-blue hover:text-white rounded-t ${
                             activeTab === 'all'
-                                ? 'border-b-2 border-blue-600 text-blue-600'
-                                : 'text-gray-500 hover:text-gray-700'
+                                ? 'border-b-2 border-primary-blue text-primary-blue'
+                                : 'text-gray-500'
                         }`}
                         onClick={() => setActiveTab('all')}
                     >
@@ -201,14 +201,14 @@ const AdminDashboard = () => {
 
             {/* Reservations Table */}
             {reservations.length === 0 ? (
-                <div className="bg-gray-100 p-8 rounded-lg text-center text-black">
+                <div className="bg-gray-50 p-8 rounded-lg text-center">
                     <p className="text-gray-600">
                         Tidak ada data reservasi {activeTab !== 'all' ? `dengan status "${activeTab}"` : ''}.
                     </p>
                 </div>
             ) : (
-                <div className="overflow-x-auto bg-white rounded-lg shadow">
-                    <table className="min-w-full divide-y divide-gray-200 text-black">
+                <div className="overflow-x-auto rounded-lg shadow border border-gray-200">
+                    <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -255,16 +255,16 @@ const AdminDashboard = () => {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div className="flex space-x-2">
+                                        <div className="flex space-x-4">
                                             <button
                                                 onClick={() => showReservationDetails(reservation)}
-                                                className="text-blue-600 hover:text-blue-900"
+                                                className="text-primary-blue hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors"
                                             >
                                                 Detail
                                             </button>
                                             <button
                                                 onClick={() => fetchApprovalLogs(reservation.id)}
-                                                className="text-purple-600 hover:text-purple-900"
+                                                className="text-primary-blue hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors"
                                             >
                                                 Log
                                             </button>
@@ -273,14 +273,14 @@ const AdminDashboard = () => {
                                                     <button
                                                         onClick={() => handleAction(reservation.id, 'approved')}
                                                         disabled={actionLoading === reservation.id}
-                                                        className="text-green-600 hover:text-green-900"
+                                                        className="text-green-600 hover:bg-green-600 hover:text-white py-1 px-2 rounded transition-colors"
                                                     >
                                                         {actionLoading === reservation.id ? '...' : 'Setujui'}
                                                     </button>
                                                     <button
                                                         onClick={() => handleAction(reservation.id, 'rejected')}
                                                         disabled={actionLoading === reservation.id}
-                                                        className="text-red-600 hover:text-red-900"
+                                                        className="text-red-600 hover:bg-red-600 hover:text-white py-1 px-2 rounded transition-colors"
                                                     >
                                                         {actionLoading === reservation.id ? '...' : 'Tolak'}
                                                     </button>
@@ -299,13 +299,13 @@ const AdminDashboard = () => {
             {showDetailModal && selectedReservation && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 overflow-hidden">
-                        <div className="px-6 py-4 bg-blue-600 text-white flex justify-between items-center">
+                        <div className="px-6 py-4 bg-primary-blue text-white flex justify-between items-center">
                             <h3 className="text-lg font-bold">Detail Reservasi</h3>
                             <button onClick={() => setShowDetailModal(false)} className="focus:outline-none">
                                 &times;
                             </button>
                         </div>
-                        <div className="p-6 max-h-[70vh] overflow-y-auto text-black">
+                        <div className="p-6 max-h-[70vh] overflow-y-auto">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <p className="text-sm text-gray-500">ID Reservasi</p>
@@ -366,13 +366,13 @@ const AdminDashboard = () => {
                             )}
 
                             {selectedReservation.status === 'pending' && (
-                                <div className="flex justify-end space-x-3 mt-6">
+                                <div className="flex justify-end space-x-4 mt-6">
                                     <button
                                         onClick={() => {
                                             setShowDetailModal(false);
                                             handleAction(selectedReservation.id, 'rejected');
                                         }}
-                                        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                                        className="text-red-600 hover:bg-red-600 hover:text-white py-2 px-4 rounded transition-colors"
                                         disabled={actionLoading === selectedReservation.id}
                                     >
                                         {actionLoading === selectedReservation.id ? 'Memproses...' : 'Tolak'}
@@ -382,7 +382,7 @@ const AdminDashboard = () => {
                                             setShowDetailModal(false);
                                             handleAction(selectedReservation.id, 'approved');
                                         }}
-                                        className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                                        className="text-green-600 hover:bg-green-600 hover:text-white py-2 px-4 rounded transition-colors"
                                         disabled={actionLoading === selectedReservation.id}
                                     >
                                         {actionLoading === selectedReservation.id ? 'Memproses...' : 'Setujui'}
@@ -398,23 +398,23 @@ const AdminDashboard = () => {
             {showLogModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 overflow-hidden">
-                        <div className="px-6 py-4 bg-purple-600 text-white flex justify-between items-center">
+                        <div className="px-6 py-4 bg-primary-blue text-white flex justify-between items-center">
                             <h3 className="text-lg font-bold">Riwayat Persetujuan</h3>
                             <button onClick={() => setShowLogModal(false)} className="focus:outline-none">
                                 &times;
                             </button>
                         </div>
-                        <div className="p-6 max-h-[70vh] overflow-y-auto text-black">
+                        <div className="p-6 max-h-[70vh] overflow-y-auto">
                             {logLoading ? (
                                 <div className="flex justify-center py-6">
-                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-700"></div>
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-blue"></div>
                                 </div>
                             ) : logs.length === 0 ? (
                                 <p className="text-center text-gray-500 py-4">Belum ada riwayat persetujuan</p>
                             ) : (
                                 <div className="space-y-4">
                                     {logs.map((log) => (
-                                        <div key={log.id} className="border-l-4 border-purple-600 pl-4 py-2">
+                                        <div key={log.id} className="border-l-4 border-primary-blue pl-4 py-2">
                                             <div className="flex justify-between">
                                                 <span className="font-medium">{log.adminName}</span>
                                                 <span className="text-sm text-gray-500">

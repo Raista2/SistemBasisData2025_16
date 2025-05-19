@@ -92,7 +92,7 @@ const MyReservations = () => {
             case 'canceled':
                 return 'bg-gray-100 text-gray-800';
             default:
-                return 'bg-yellow-100 text-yellow-800';
+                return 'bg-primary-yellow text-primary-blue';
         }
     };
 
@@ -111,15 +111,16 @@ const MyReservations = () => {
 
     if (loading && reservations.length === 0) {
         return (
-            <div className="flex justify-center items-center min-h-[calc(100vh-64px)] pt-16">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+            <div className="flex justify-center items-center min-h-[calc(100vh-64px)] pt-16 bg-white">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue mb-4"></div>
+                <p className="text-primary-blue font-medium">Loading...</p>
             </div>
         );
     }
 
     return (
-        <div className="pt-16 container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Reservasiku</h1>
+        <div className="pt-16 container mx-auto px-4 py-8 bg-white">
+            <h1 className="text-3xl font-bold mb-6 text-primary-blue">Reservasiku</h1>
 
             {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
@@ -130,31 +131,41 @@ const MyReservations = () => {
             {/* Filter Tabs */}
             <div className="flex flex-wrap gap-2 mb-6">
                 <button
-                    className={`px-4 py-2 rounded-md ${activeTab === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                    className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'all' 
+                        ? 'bg-primary-blue text-white' 
+                        : 'text-primary-blue hover:bg-primary-blue hover:text-white'}`}
                     onClick={() => setActiveTab('all')}
                 >
                     Semua
                 </button>
                 <button
-                    className={`px-4 py-2 rounded-md ${activeTab === 'pending' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                    className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'pending' 
+                        ? 'bg-primary-blue text-white' 
+                        : 'text-primary-blue hover:bg-primary-blue hover:text-white'}`}
                     onClick={() => setActiveTab('pending')}
                 >
                     Menunggu
                 </button>
                 <button
-                    className={`px-4 py-2 rounded-md ${activeTab === 'approved' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                    className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'approved' 
+                        ? 'bg-primary-blue text-white' 
+                        : 'text-primary-blue hover:bg-primary-blue hover:text-white'}`}
                     onClick={() => setActiveTab('approved')}
                 >
                     Disetujui
                 </button>
                 <button
-                    className={`px-4 py-2 rounded-md ${activeTab === 'rejected' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                    className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'rejected' 
+                        ? 'bg-primary-blue text-white' 
+                        : 'text-primary-blue hover:bg-primary-blue hover:text-white'}`}
                     onClick={() => setActiveTab('rejected')}
                 >
                     Ditolak
                 </button>
                 <button
-                    className={`px-4 py-2 rounded-md ${activeTab === 'canceled' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}`}
+                    className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'canceled' 
+                        ? 'bg-primary-blue text-white' 
+                        : 'text-primary-blue hover:bg-primary-blue hover:text-white'}`}
                     onClick={() => setActiveTab('canceled')}
                 >
                     Dibatalkan
@@ -162,13 +173,13 @@ const MyReservations = () => {
             </div>
 
             {reservations.length === 0 ? (
-                <div className="bg-gray-100 p-8 rounded-lg text-center text-black">
+                <div className="bg-gray-50 p-8 rounded-lg text-center">
                     <p className="text-gray-600">
                         Tidak ada reservasi {activeTab !== 'all' ? `dengan status "${getStatusText(activeTab)}"` : ''}.
                     </p>
                     <Link 
                         to="/gedung"
-                        className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                        className="mt-4 inline-block px-4 py-2 bg-primary-blue text-white rounded-md hover:bg-bem-darkblue transition-colors"
                     >
                         Buat Reservasi Baru
                     </Link>
@@ -176,8 +187,8 @@ const MyReservations = () => {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {reservations.map((reservation) => (
-                        <div key={reservation.id} className="bg-white rounded-lg shadow-md overflow-hidden text-black">
-                            <div className="p-4 border-b">
+                        <div key={reservation.id} className="bg-white rounded-lg shadow-md overflow-hidden text-gray-800 hover:shadow-lg transition-shadow">
+                            <div className="p-4 border-b border-gray-200">
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <h3 className="text-lg font-bold">{reservation.roomName}</h3>
@@ -204,7 +215,7 @@ const MyReservations = () => {
                                 <div className="mt-4 flex justify-between">
                                     <button
                                         onClick={() => showReservationDetails(reservation)}
-                                        className="text-blue-600 hover:text-blue-800"
+                                        className="text-primary-blue hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors"
                                     >
                                         Lihat Detail
                                     </button>
@@ -212,7 +223,7 @@ const MyReservations = () => {
                                         <button
                                             onClick={() => handleCancelReservation(reservation.id)}
                                             disabled={cancelLoading === reservation.id}
-                                            className="text-red-600 hover:text-red-800"
+                                            className="text-red-600 hover:bg-red-600 hover:text-white py-1 px-2 rounded transition-colors"
                                         >
                                             {cancelLoading === reservation.id ? 'Membatalkan...' : 'Batalkan'}
                                         </button>
@@ -228,13 +239,13 @@ const MyReservations = () => {
             {showDetailModal && selectedReservation && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 overflow-hidden">
-                        <div className="px-6 py-4 bg-blue-600 text-white flex justify-between items-center">
+                        <div className="px-6 py-4 bg-primary-blue text-white flex justify-between items-center">
                             <h3 className="text-lg font-bold">Detail Reservasi</h3>
                             <button onClick={() => setShowDetailModal(false)} className="focus:outline-none">
                                 &times;
                             </button>
                         </div>
-                        <div className="p-6 max-h-[70vh] overflow-y-auto text-black">
+                        <div className="p-6 max-h-[70vh] overflow-y-auto text-gray-800">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <p className="text-sm text-gray-500">ID Reservasi</p>
@@ -293,7 +304,7 @@ const MyReservations = () => {
                                             setShowDetailModal(false);
                                             handleCancelReservation(selectedReservation.id);
                                         }}
-                                        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                                        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
                                         disabled={cancelLoading === selectedReservation.id}
                                     >
                                         {cancelLoading === selectedReservation.id ? 'Membatalkan...' : 'Batalkan Reservasi'}

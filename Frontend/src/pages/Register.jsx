@@ -44,9 +44,9 @@ const Register = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen">
-            <div className="w-full max-w-md bg-white bg-opacity-90 rounded-lg shadow-lg p-8">
-                <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center">Register</h1>
+        <div className="flex justify-center items-center min-h-screen bg-gray-900">
+            <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+                <h1 className="text-3xl font-bold mb-8 text-primary-blue text-center font-qanelas">Register</h1>
                 
                 {error && (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -60,7 +60,7 @@ const Register = () => {
                             Username
                         </label>
                         <input
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800"
                             type="text"
                             id="username"
                             value={username}
@@ -75,7 +75,7 @@ const Register = () => {
                             Email
                         </label>
                         <input
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800"
                             type="email"
                             id="email"
                             value={email}
@@ -90,7 +90,7 @@ const Register = () => {
                             Password
                         </label>
                         <input
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800"
                             type="password"
                             id="password"
                             value={password}
@@ -106,7 +106,7 @@ const Register = () => {
                             Confirm Password
                         </label>
                         <input
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800"
                             type="password"
                             id="confirmPassword"
                             value={confirmPassword}
@@ -137,7 +137,7 @@ const Register = () => {
                                 Admin Registration Code
                             </label>
                             <input
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800"
                                 type="password"
                                 id="adminCode"
                                 value={adminCode}
@@ -152,7 +152,7 @@ const Register = () => {
                     )}
                     
                     <button
-                        className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        className={`w-full bg-primary-blue text-white py-2 px-4 rounded-md hover:bg-bem-darkblue transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                         type="submit"
                         disabled={loading}
                     >
@@ -163,7 +163,7 @@ const Register = () => {
                 <div className="mt-6 text-center">
                     <p className="text-gray-600">
                         Already have an account?{' '}
-                        <Link to="/login" className="text-blue-600 hover:underline">
+                        <Link to="/login" className="text-primary-blue hover:text-bem-darkblue transition-colors">
                             Login here
                         </Link>
                     </p>

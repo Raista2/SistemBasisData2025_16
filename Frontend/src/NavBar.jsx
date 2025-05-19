@@ -92,11 +92,11 @@ function NavBar({ user, onLogout }) {
     });
 
     return (
-        <nav className="fixed top-0 left-0 right-0 w-full bg-gray-800 text-white p-3 shadow-md z-50 opacity-95 border-b-2 border-blue-100">
+        <nav className="fixed top-0 left-0 right-0 w-full bg-primary-blue text-white p-3 shadow-md z-50 opacity-95 border-b-2 border-primary-yellow">
             <div className="w-full px-4 flex justify-between items-center">
                 {/* Logo and main navigation */}
                 <div className="flex items-center gap-4">
-                    <Link to="/" className="text-2xl font-bold text-white">Room Reservation</Link>
+                    <Link to="/" className="text-2xl font-bold text-white font-qanelas">Room Reservation</Link>
 
                     {/* Desktop Navigation Links */}
                     <div className="hidden lg:flex items-center space-x-3">
@@ -104,8 +104,8 @@ function NavBar({ user, onLogout }) {
                             <Link 
                                 key={link.path}
                                 to={link.path}
-                                className={`text-white hover:text-gray-300 transition-colors px-3 py-2 rounded-md ${
-                                    location.pathname === link.path ? 'bg-gray-700' : ''
+                                className={`text-white hover:text-primary-yellow transition-colors px-3 py-2 rounded-md font-medium ${
+                                    location.pathname === link.path ? 'bg-bem-darkblue' : ''
                                 }`}
                             >
                                 {link.label}
@@ -139,7 +139,7 @@ function NavBar({ user, onLogout }) {
                             <div className="relative">
                                 <button
                                     onClick={toggleDropdown}
-                                    className="flex items-center gap-1 font-bold text-l hover:text-gray-300 transition-colors"
+                                    className="flex items-center gap-1 font-bold text-l hover:text-primary-yellow transition-colors"
                                 >
                                     {user.username}
                                     <svg
@@ -153,17 +153,17 @@ function NavBar({ user, onLogout }) {
                                 </button>
 
                                 {isDropdownOpen && (
-                                    <div className="absolute top-full right-0 mt-2 bg-gray-700 rounded-md shadow-lg p-2 min-w-[160px] z-20">
+                                    <div className="absolute top-full right-0 mt-2 bg-bem-darkblue rounded-md shadow-lg p-2 min-w-[160px] z-20">
                                         <Link
                                             to="/profile"
-                                            className="block w-full text-left py-2 px-3 hover:bg-gray-600 rounded transition-colors"
+                                            className="block w-full text-left py-2 px-3 hover:bg-primary-blue rounded transition-colors"
                                             onClick={closeDropdown}
                                         >
                                             Profile
                                         </Link>
                                         <button
                                             onClick={onLogout}
-                                            className="block w-full text-left py-2 px-3 hover:bg-gray-600 rounded transition-colors mt-1"
+                                            className="block w-full text-left py-2 px-3 hover:bg-primary-blue rounded transition-colors mt-1"
                                         >
                                             Logout
                                         </button>
@@ -173,8 +173,8 @@ function NavBar({ user, onLogout }) {
                         </div>
                     ) : (
                         <>
-                            <Link to="/login" className="text-white hover:text-gray-300">Login</Link>
-                            <Link to="/register" className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded transition-colors">Register</Link>
+                            <Link to="/login" className="text-white hover:text-primary-yellow font-medium">Login</Link>
+                            <Link to="/register" className="bg-primary-yellow text-primary-blue hover:bg-yellow-400 py-1 px-4 rounded transition-colors font-semibold">Register</Link>
                         </>
                     )}
                 </div>
@@ -182,14 +182,14 @@ function NavBar({ user, onLogout }) {
 
             {/* Mobile Navigation Menu */}
             {isMobileMenuOpen && (
-                <div className="lg:hidden bg-gray-700 mt-3 p-3 rounded-md">
+                <div className="lg:hidden bg-bem-darkblue mt-3 p-3 rounded-md">
                     <div className="flex flex-col space-y-2">
                         {filteredLinks.map(link => (
                             <Link
                                 key={link.path}
                                 to={link.path}
-                                className={`flex items-center text-white py-2 px-3 hover:bg-gray-600 rounded ${
-                                    location.pathname === link.path ? 'bg-gray-600' : ''
+                                className={`flex items-center text-white py-2 px-3 hover:bg-primary-blue rounded ${
+                                    location.pathname === link.path ? 'bg-primary-blue' : ''
                                 }`}
                                 onClick={closeMobileMenu}
                             >
@@ -201,10 +201,10 @@ function NavBar({ user, onLogout }) {
                         ))}
 
                         {user ? (
-                            <div className="pt-2 mt-2 border-t border-gray-600">
+                            <div className="pt-2 mt-2 border-t border-primary-blue">
                                 <Link
                                     to="/profile"
-                                    className="flex items-center text-white py-2 px-3 hover:bg-gray-600 rounded"
+                                    className="flex items-center text-white py-2 px-3 hover:bg-primary-blue rounded"
                                     onClick={closeMobileMenu}
                                 >
                                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,7 +217,7 @@ function NavBar({ user, onLogout }) {
                                         onLogout();
                                         closeMobileMenu();
                                     }}
-                                    className="flex items-center w-full text-left text-white py-2 px-3 hover:bg-gray-600 rounded"
+                                    className="flex items-center w-full text-left text-white py-2 px-3 hover:bg-primary-blue rounded"
                                 >
                                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -226,10 +226,10 @@ function NavBar({ user, onLogout }) {
                                 </button>
                             </div>
                         ) : (
-                            <div className="pt-2 mt-2 border-t border-gray-600 flex flex-col space-y-2">
+                            <div className="pt-2 mt-2 border-t border-primary-blue flex flex-col space-y-2">
                                 <Link
                                     to="/login"
-                                    className="flex items-center text-white py-2 px-3 hover:bg-gray-600 rounded"
+                                    className="flex items-center text-white py-2 px-3 hover:bg-primary-blue rounded"
                                     onClick={closeMobileMenu}
                                 >
                                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -239,7 +239,7 @@ function NavBar({ user, onLogout }) {
                                 </Link>
                                 <Link
                                     to="/register"
-                                    className="flex items-center text-white py-2 px-3 bg-blue-600 hover:bg-blue-700 rounded"
+                                    className="flex items-center text-primary-blue py-2 px-3 bg-primary-yellow hover:bg-yellow-400 rounded font-semibold"
                                     onClick={closeMobileMenu}
                                 >
                                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

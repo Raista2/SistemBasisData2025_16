@@ -100,16 +100,19 @@ const Profile = () => {
 
     if (!user) {
         return (
-            <div className="flex justify-center items-center min-h-[calc(100vh-64px)] pt-16">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+            <div className="flex justify-center items-center min-h-[calc(100vh-64px)] pt-16 bg-white">
+                <div className="flex flex-col items-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue mb-4"></div>
+                    <p className="text-primary-blue font-medium">Loading...</p>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="pt-16 container mx-auto px-4 py-8">
+        <div className="pt-16 container mx-auto px-4 py-8 bg-white">
             <div className="max-w-2xl mx-auto">
-                <h1 className="text-3xl font-bold mb-6">Profil Pengguna</h1>
+                <h1 className="text-3xl font-bold mb-6 text-primary-blue">Profil Pengguna</h1>
 
                 {success && (
                     <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
@@ -126,11 +129,11 @@ const Profile = () => {
                 <div className="bg-white rounded-lg shadow-md p-6 mb-8">
                     <div className="mb-6 pb-6 border-b border-gray-200">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-bold text-black">Informasi Akun</h2>
+                            <h2 className="text-xl font-bold text-gray-800">Informasi Akun</h2>
                             {!editMode && (
                                 <button
                                     onClick={() => setEditMode(true)}
-                                    className="text-blue-600 hover:text-blue-800"
+                                    className="text-primary-blue hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors"
                                 >
                                     Edit
                                 </button>
@@ -145,7 +148,7 @@ const Profile = () => {
                                     </label>
                                     <input
                                         type="text"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800"
                                         id="username"
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
@@ -159,7 +162,7 @@ const Profile = () => {
                                     </label>
                                     <input
                                         type="email"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800"
                                         id="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -178,15 +181,16 @@ const Profile = () => {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className={`px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 ${loading ? 'opacity-70 cursor-not-allowed' : ''
-                                            }`}
+                                        className={`px-4 py-2 bg-primary-blue text-white rounded-md hover:bg-bem-darkblue transition-colors ${
+                                            loading ? 'opacity-70 cursor-not-allowed' : ''
+                                        }`}
                                     >
                                         {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
                                     </button>
                                 </div>
                             </form>
                         ) : (
-                            <div className="mt-4 text-black">
+                            <div className="mt-4 text-gray-800">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <p className="text-sm text-gray-500">Username</p>
@@ -227,18 +231,19 @@ const Profile = () => {
                                                 : 'N/A'
                                             }
                                         </p>
-                                    </div>                                </div>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </div>
 
                     <div>
                         <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-bold text-black">Keamanan</h2>
+                            <h2 className="text-xl font-bold text-gray-800">Keamanan</h2>
                             {!passwordChangeMode && (
                                 <button
                                     onClick={() => setPasswordChangeMode(true)}
-                                    className="text-blue-600 hover:text-blue-800"
+                                    className="text-primary-blue hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors"
                                 >
                                     Ubah Password
                                 </button>
@@ -253,7 +258,7 @@ const Profile = () => {
                                     </label>
                                     <input
                                         type="password"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800"
                                         id="currentPassword"
                                         value={currentPassword}
                                         onChange={(e) => setCurrentPassword(e.target.value)}
@@ -267,7 +272,7 @@ const Profile = () => {
                                     </label>
                                     <input
                                         type="password"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800"
                                         id="newPassword"
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
@@ -283,7 +288,7 @@ const Profile = () => {
                                     </label>
                                     <input
                                         type="password"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800"
                                         id="confirmPassword"
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
@@ -302,15 +307,16 @@ const Profile = () => {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className={`px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 ${loading ? 'opacity-70 cursor-not-allowed' : ''
-                                            }`}
+                                        className={`px-4 py-2 bg-primary-blue text-white rounded-md hover:bg-bem-darkblue transition-colors ${
+                                            loading ? 'opacity-70 cursor-not-allowed' : ''
+                                        }`}
                                     >
                                         {loading ? 'Menyimpan...' : 'Ubah Password'}
                                     </button>
                                 </div>
                             </form>
                         ) : (
-                            <div className="mt-4 text-black">
+                            <div className="mt-4 text-gray-800">
                                 <p className="text-gray-600">
                                     Terakhir diubah: {user.passwordUpdatedAt
                                         ? new Date(user.passwordUpdatedAt).toLocaleDateString('id-ID', {
@@ -327,24 +333,24 @@ const Profile = () => {
                 </div>
 
                 <div className="bg-white rounded-lg shadow-md p-6">
-                    <h2 className="text-xl font-bold mb-4 text-black">Aktivitas Akun</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-black">
-                        <div className="bg-blue-50 p-4 rounded-lg">
-                            <h3 className="font-bold text-lg text-blue-700 mb-2">Total Reservasi</h3>
-                            <p className="text-3xl font-bold">{user.totalReservations || 0}</p>
+                    <h2 className="text-xl font-bold mb-4 text-gray-800">Aktivitas Akun</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-bem-lightblue bg-opacity-10 p-4 rounded-lg">
+                            <h3 className="font-bold text-lg text-primary-blue mb-2">Total Reservasi</h3>
+                            <p className="text-3xl font-bold text-gray-800">{user.totalReservations || 0}</p>
                             <button
                                 onClick={() => navigate('/my-reservations')}
-                                className="mt-2 text-blue-600 hover:text-blue-800 text-sm"
+                                className="mt-2 text-primary-blue hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors text-sm"
                             >
                                 Lihat semua reservasi
                             </button>
                         </div>
-                        <div className="bg-green-50 p-4 rounded-lg">
-                            <h3 className="font-bold text-lg text-green-700 mb-2">Reservasi Disetujui</h3>
-                            <p className="text-3xl font-bold">{user.approvedReservations || 0}</p>
+                        <div className="bg-primary-yellow bg-opacity-10 p-4 rounded-lg">
+                            <h3 className="font-bold text-lg text-primary-blue mb-2">Reservasi Disetujui</h3>
+                            <p className="text-3xl font-bold text-gray-800">{user.approvedReservations || 0}</p>
                             <button
                                 onClick={() => navigate('/my-reservations?status=approved')}
-                                className="mt-2 text-green-600 hover:text-green-800 text-sm"
+                                className="mt-2 text-primary-blue hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors text-sm"
                             >
                                 Lihat reservasi disetujui
                             </button>
