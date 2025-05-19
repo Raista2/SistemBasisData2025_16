@@ -27,6 +27,7 @@ function NavBar() {
                 {/* Logo and main navigation */}
                 <div className="flex items-center gap-4">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                     <Link to="/" className="text-2xl font-bold text-white">PinjamRuang FT UI</Link>
                     
                     {/* Desktop Navigation Links */}
@@ -37,6 +38,8 @@ function NavBar() {
                             <Link to="/my-reservations" className="text-white hover:text-gray-300 transition-colors">
                                 Reservasiku
 =======
+=======
+>>>>>>> Stashed changes
                     <Link to="/" className="text-2xl font-bold text-white font-qanelas">Room Reservation</Link>
 
                     {/* Desktop Navigation Links */}
@@ -100,6 +103,7 @@ function NavBar() {
 
                                 {isDropdownOpen && (
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                                     <div className="absolute top-full right-0 mt-2 bg-gray-700 rounded-md shadow-lg p-2 min-w-[160px] z-20">
                                         <Link 
                                             to="/profile" 
@@ -115,6 +119,8 @@ function NavBar() {
                                             }}
                                             className="block w-full text-left py-2 px-3 hover:bg-gray-600 rounded transition-colors mt-1"
 =======
+=======
+>>>>>>> Stashed changes
                                     <div className="absolute top-full right-0 mt-2 bg-bem-darkblue rounded-md shadow-lg p-2 min-w-[160px] z-20">
                                         <Link
                                             to="/profile"
@@ -126,6 +132,9 @@ function NavBar() {
                                         <button
                                             onClick={onLogout}
                                             className="block w-full text-left py-2 px-3 hover:bg-primary-blue rounded transition-colors mt-1"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                                         >
                                             Logout
@@ -145,6 +154,7 @@ function NavBar() {
 
             {/* Mobile Navigation Menu */}
             {isMobileMenuOpen && (
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                 <div className="md:hidden bg-gray-700 mt-3 p-3 rounded-md">
                     <div className="flex flex-col space-y-2">
@@ -169,6 +179,8 @@ function NavBar() {
                                 className="text-white py-2 px-3 hover:bg-gray-600 rounded"
                                 onClick={() => setIsMobileMenuOpen(false)}
 =======
+=======
+>>>>>>> Stashed changes
                 <div className="lg:hidden bg-bem-darkblue mt-3 p-3 rounded-md">
                     <div className="flex flex-col space-y-2">
                         {filteredLinks.map(link => (
@@ -197,12 +209,15 @@ function NavBar() {
                         
                         {user ? (
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             <>
                                 <Link 
                                     to="/profile" 
                                     className="text-white py-2 px-3 hover:bg-gray-600 rounded"
                                     onClick={() => setIsMobileMenuOpen(false)}
 =======
+=======
+>>>>>>> Stashed changes
                             <div className="pt-2 mt-2 border-t border-primary-blue">
                                 <Link
                                     to="/profile"
@@ -218,7 +233,11 @@ function NavBar() {
                                         setIsMobileMenuOpen(false);
                                     }}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                                     className="text-left text-white py-2 px-3 hover:bg-gray-600 rounded w-full"
+=======
+                                    className="flex items-center w-full text-left text-white py-2 px-3 hover:bg-primary-blue rounded"
+>>>>>>> Stashed changes
 =======
                                     className="flex items-center w-full text-left text-white py-2 px-3 hover:bg-primary-blue rounded"
 >>>>>>> Stashed changes
@@ -228,12 +247,15 @@ function NavBar() {
                             </>
                         ) : (
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             <>
                                 <Link 
                                     to="/login" 
                                     className="text-white py-2 px-3 hover:bg-gray-600 rounded"
                                     onClick={() => setIsMobileMenuOpen(false)}
 =======
+=======
+>>>>>>> Stashed changes
                             <div className="pt-2 mt-2 border-t border-primary-blue flex flex-col space-y-2">
                                 <Link
                                     to="/login"

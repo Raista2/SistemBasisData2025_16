@@ -46,6 +46,9 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 
   return children;
 };
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 function App() {
@@ -80,6 +83,7 @@ function App() {
 
   return (
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     <>
       <NavBar user={null} onLogout={() => {}} />
       
@@ -106,6 +110,8 @@ function App() {
       </Routes>
     </>
 =======
+=======
+>>>>>>> Stashed changes
     <div className="font-qanelas min-h-screen flex flex-col">
       <NavBar user={user} onLogout={logout} />
 
@@ -157,6 +163,9 @@ function App() {
         </div>
       </footer>
     </div>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   )
 }
