@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -11,8 +11,42 @@ import Gedung from './pages/Gedung.jsx'
 import Ruangan from './pages/Ruangan.jsx'
 import Reservation from './pages/Reservation.jsx'
 import Approval from './pages/Approval.jsx'
+<<<<<<< Updated upstream
 import MyReservations from './pages/MyReservations.jsx'  // Tambahkan import ini
 import ProtectedRoute from './components/ProtectedRoute';
+=======
+import AdminDashboard from './pages/AdminDasboard.jsx'
+import { useAuth } from './context/AuthContext.jsx'
+import MyReservations from './pages/MyReservations.jsx'
+import ReservationLanding from './pages/ReservationLanding.jsx'
+import Profile from './pages/Profile.jsx'
+import HomePage from './pages/Home.jsx'
+
+const ProtectedRoute = ({ children, requiredRole }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="pt-16 flex justify-center items-center h-screen font-qanelas">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue mb-4"></div>
+          <p className="text-primary-blue font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (requiredRole && user.role !== requiredRole) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+>>>>>>> Stashed changes
 
 function App() {
   const [count, setCount] = useState(0)
@@ -45,6 +79,7 @@ function App() {
   }
 
   return (
+<<<<<<< Updated upstream
     <>
       <NavBar user={null} onLogout={() => {}} />
       
@@ -70,6 +105,59 @@ function App() {
         <Route path="/map" element={<Map />} />
       </Routes>
     </>
+=======
+    <div className="font-qanelas min-h-screen flex flex-col">
+      <NavBar user={user} onLogout={logout} />
+
+      <main className="flex-grow">
+        {/* Define routes*/}
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/gedung" element={<Gedung />} />
+          <Route path="/ruangan/:buildingId" element={<Ruangan />} />
+          <Route path="/reservation/:roomId" element={
+            <ProtectedRoute>
+              <Reservation />
+            </ProtectedRoute>
+          } />
+          <Route path="/approval" element={
+            <ProtectedRoute requiredRole="admin">
+              <Approval />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/dashboard" element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/map" element={<Map />} />
+          <Route path="/my-reservations" element={
+            <ProtectedRoute>
+              <MyReservations />
+            </ProtectedRoute>
+          } />
+          <Route path="/reservation" element={
+            <ProtectedRoute>
+              <ReservationLanding />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+        </Routes>
+      </main>
+
+      <footer className="bg-primary-yellow text-primary-blue py-4 mt-auto">
+        <div className="container mx-auto px-4 text-center">
+          <p className="font-medium">&copy; {new Date().getFullYear()} Room Reservation. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+>>>>>>> Stashed changes
   )
 }
 

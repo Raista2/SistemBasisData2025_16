@@ -22,10 +22,11 @@ function NavBar() {
     };
 
     return (
-        <nav className="fixed top-0 left-0 right-0 w-full bg-gray-800 text-white p-3 shadow-md z-50 opacity-95 border-b-2 border-blue-100">
+        <nav className="fixed top-0 left-0 right-0 w-full bg-primary-blue text-white p-3 shadow-md z-50 opacity-95 border-b-2 border-primary-yellow">
             <div className="w-full px-4 flex justify-between items-center">
                 {/* Logo and main navigation */}
                 <div className="flex items-center gap-4">
+<<<<<<< Updated upstream
                     <Link to="/" className="text-2xl font-bold text-white">PinjamRuang FT UI</Link>
                     
                     {/* Desktop Navigation Links */}
@@ -35,6 +36,21 @@ function NavBar() {
                         {user && (
                             <Link to="/my-reservations" className="text-white hover:text-gray-300 transition-colors">
                                 Reservasiku
+=======
+                    <Link to="/" className="text-2xl font-bold text-white font-qanelas">Room Reservation</Link>
+
+                    {/* Desktop Navigation Links */}
+                    <div className="hidden lg:flex items-center space-x-3">
+                        {filteredLinks.map(link => (
+                            <Link 
+                                key={link.path}
+                                to={link.path}
+                                className={`text-white hover:text-primary-yellow transition-colors px-3 py-2 rounded-md font-medium ${
+                                    location.pathname === link.path ? 'bg-bem-darkblue' : ''
+                                }`}
+                            >
+                                {link.label}
+>>>>>>> Stashed changes
                             </Link>
                         )}
                         {user && user.role === 'admin' && (
@@ -69,7 +85,7 @@ function NavBar() {
                             <div className="relative">
                                 <button
                                     onClick={toggleDropdown}
-                                    className="flex items-center gap-1 font-bold text-l hover:text-gray-300 transition-colors"
+                                    className="flex items-center gap-1 font-bold text-l hover:text-primary-yellow transition-colors"
                                 >
                                     {user.username}
                                     <svg
@@ -83,6 +99,7 @@ function NavBar() {
                                 </button>
 
                                 {isDropdownOpen && (
+<<<<<<< Updated upstream
                                     <div className="absolute top-full right-0 mt-2 bg-gray-700 rounded-md shadow-lg p-2 min-w-[160px] z-20">
                                         <Link 
                                             to="/profile" 
@@ -97,6 +114,19 @@ function NavBar() {
                                                 setIsDropdownOpen(false);
                                             }}
                                             className="block w-full text-left py-2 px-3 hover:bg-gray-600 rounded transition-colors mt-1"
+=======
+                                    <div className="absolute top-full right-0 mt-2 bg-bem-darkblue rounded-md shadow-lg p-2 min-w-[160px] z-20">
+                                        <Link
+                                            to="/profile"
+                                            className="block w-full text-left py-2 px-3 hover:bg-primary-blue rounded transition-colors"
+                                            onClick={closeDropdown}
+                                        >
+                                            Profile
+                                        </Link>
+                                        <button
+                                            onClick={onLogout}
+                                            className="block w-full text-left py-2 px-3 hover:bg-primary-blue rounded transition-colors mt-1"
+>>>>>>> Stashed changes
                                         >
                                             Logout
                                         </button>
@@ -106,8 +136,8 @@ function NavBar() {
                         </div>
                     ) : (
                         <>
-                            <Link to="/login" className="text-white hover:text-gray-300">Login</Link>
-                            <Link to="/register" className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded transition-colors">Register</Link>
+                            <Link to="/login" className="text-white hover:text-primary-yellow font-medium">Login</Link>
+                            <Link to="/register" className="bg-primary-yellow text-primary-blue hover:bg-yellow-400 py-1 px-4 rounded transition-colors font-semibold">Register</Link>
                         </>
                     )}
                 </div>
@@ -115,6 +145,7 @@ function NavBar() {
 
             {/* Mobile Navigation Menu */}
             {isMobileMenuOpen && (
+<<<<<<< Updated upstream
                 <div className="md:hidden bg-gray-700 mt-3 p-3 rounded-md">
                     <div className="flex flex-col space-y-2">
                         <Link 
@@ -137,6 +168,18 @@ function NavBar() {
                                 to="/my-reservations" 
                                 className="text-white py-2 px-3 hover:bg-gray-600 rounded"
                                 onClick={() => setIsMobileMenuOpen(false)}
+=======
+                <div className="lg:hidden bg-bem-darkblue mt-3 p-3 rounded-md">
+                    <div className="flex flex-col space-y-2">
+                        {filteredLinks.map(link => (
+                            <Link
+                                key={link.path}
+                                to={link.path}
+                                className={`flex items-center text-white py-2 px-3 hover:bg-primary-blue rounded ${
+                                    location.pathname === link.path ? 'bg-primary-blue' : ''
+                                }`}
+                                onClick={closeMobileMenu}
+>>>>>>> Stashed changes
                             >
                                 Reservasiku
                             </Link>
@@ -153,11 +196,19 @@ function NavBar() {
                         )}
                         
                         {user ? (
+<<<<<<< Updated upstream
                             <>
                                 <Link 
                                     to="/profile" 
                                     className="text-white py-2 px-3 hover:bg-gray-600 rounded"
                                     onClick={() => setIsMobileMenuOpen(false)}
+=======
+                            <div className="pt-2 mt-2 border-t border-primary-blue">
+                                <Link
+                                    to="/profile"
+                                    className="flex items-center text-white py-2 px-3 hover:bg-primary-blue rounded"
+                                    onClick={closeMobileMenu}
+>>>>>>> Stashed changes
                                 >
                                     Profile
                                 </Link>
@@ -166,24 +217,43 @@ function NavBar() {
                                         handleLogout();
                                         setIsMobileMenuOpen(false);
                                     }}
+<<<<<<< Updated upstream
                                     className="text-left text-white py-2 px-3 hover:bg-gray-600 rounded w-full"
+=======
+                                    className="flex items-center w-full text-left text-white py-2 px-3 hover:bg-primary-blue rounded"
+>>>>>>> Stashed changes
                                 >
                                     Logout
                                 </button>
                             </>
                         ) : (
+<<<<<<< Updated upstream
                             <>
                                 <Link 
                                     to="/login" 
                                     className="text-white py-2 px-3 hover:bg-gray-600 rounded"
                                     onClick={() => setIsMobileMenuOpen(false)}
+=======
+                            <div className="pt-2 mt-2 border-t border-primary-blue flex flex-col space-y-2">
+                                <Link
+                                    to="/login"
+                                    className="flex items-center text-white py-2 px-3 hover:bg-primary-blue rounded"
+                                    onClick={closeMobileMenu}
+>>>>>>> Stashed changes
                                 >
                                     Login
                                 </Link>
+<<<<<<< Updated upstream
                                 <Link 
                                     to="/register" 
                                     className="text-white py-2 px-3 hover:bg-gray-600 rounded"
                                     onClick={() => setIsMobileMenuOpen(false)}
+=======
+                                <Link
+                                    to="/register"
+                                    className="flex items-center text-primary-blue py-2 px-3 bg-primary-yellow hover:bg-yellow-400 rounded font-semibold"
+                                    onClick={closeMobileMenu}
+>>>>>>> Stashed changes
                                 >
                                     Register
                                 </Link>
