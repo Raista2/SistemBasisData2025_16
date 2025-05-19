@@ -181,7 +181,7 @@ const Reservation = () => {
                         </div>
                         <div className="md:w-2/3 md:pl-6">
                             <h3 className="text-lg font-bold mb-2">{room.name}</h3>
-                            <p className="text-gray-600 mb-4">{room.buildingName}</p>
+                            <p className="text-white mb-4">{room.buildingName}</p>
                             <div className="grid grid-cols-2 gap-y-2 text-sm">
                                 <div>
                                     <span className="text-gray-700 font-semibold">Kapasitas:</span>

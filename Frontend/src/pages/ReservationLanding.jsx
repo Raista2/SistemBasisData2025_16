@@ -102,7 +102,7 @@ const ReservationLanding = () => {
                     <h2 className="text-xl font-bold mb-4">Pilih Gedung</h2>
                     
                     <div className="flex flex-wrap gap-4 mb-6">
-                        <div className="w-full sm:w-auto sm:flex-1">
+                        <div className="w-full sm:w-auto sm:flex-1 text-gray-200">
                             <select
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 value={selectedBuilding}
@@ -145,7 +145,7 @@ const ReservationLanding = () => {
                             <label className="block text-gray-700 font-medium mb-2">Pencarian</label>
                             <input
                                 type="text"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="text-gray-100 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Cari nama ruangan..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -155,7 +155,7 @@ const ReservationLanding = () => {
                         <div>
                             <label className="block text-gray-700 font-medium mb-2">Tipe Ruangan</label>
                             <select
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="text-gray-200 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 value={filterType}
                                 onChange={(e) => setFilterType(e.target.value)}
                             >
@@ -171,7 +171,7 @@ const ReservationLanding = () => {
                         <div>
                             <label className="block text-gray-700 font-medium mb-2">Kapasitas</label>
                             <select
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="text-gray-200 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 value={filterCapacity}
                                 onChange={(e) => setFilterCapacity(e.target.value)}
                             >

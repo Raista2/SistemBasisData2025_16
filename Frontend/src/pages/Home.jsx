@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import GedungService from '../services/GedungService';
 import PeminjamanService from '../services/PeminjamanService';
+import RuanganService from '../services/RuanganService';
 
 const HomePage = () => {
     const { user } = useAuth();
@@ -23,8 +24,11 @@ const HomePage = () => {
             try {
                 setLoading(true);
                 
-                // Fetch buildings to get total count
-                const buildings = await GedungService.getAllGedung();
+                // Fetch buildings and rooms in parallel for efficiency
+                const [buildings, allRooms] = await Promise.all([
+                    GedungService.getAllGedung(),
+                    RuanganService.getAllRuangan()
+                ]);
                 
                 // Get statistics
                 let totalReservations = 0;
@@ -48,9 +52,10 @@ const HomePage = () => {
                     }
                 }
                 
-                // Calculate total rooms from all buildings
-                const totalRooms = buildings.reduce((sum, building) => sum + (building.roomCount || 0), 0);
+                // Total rooms = length of all rooms array
+                const totalRooms = allRooms.length;
                 
+                // Set statistics
                 setStats({
                     totalBuildings: buildings.length,
                     totalRooms: totalRooms,
