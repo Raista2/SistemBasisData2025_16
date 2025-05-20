@@ -71,12 +71,21 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    const updateUserData = (updatedUserData) => {
-        setUser(updatedUserData);
-        if (updatedUserData) {
-            localStorage.setItem('user', JSON.stringify(updatedUserData));
-        } else {
-            localStorage.removeItem('user');
+    const updateUserData = async (userData) => {
+        try {
+            const response = await AuthService.updateUser(userData);
+
+            if (response.success) {
+                // Update user data in localStorage and state
+                const updatedUser = { ...user, ...response.payload };
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+                setUser(updatedUser);
+            }
+
+            return response;
+        } catch (error) {
+            console.error('Error updating user data:', error);
+            throw error;
         }
     };
 
@@ -84,20 +93,20 @@ export const AuthProvider = ({ children }) => {
         try {
             // Use AuthService which now uses the apiClient from this file
             const response = await AuthService.login({ email, password });
-            
+
             if (!response.success) {
                 return { success: false, message: response.message };
             }
-            
+
             // Store user data with token
             const userData = {
                 ...response.payload.user,
                 token: response.payload.token
             };
-            
+
             localStorage.setItem('user', JSON.stringify(userData));
             setUser(userData);
-            
+
             return { success: true };
         } catch (error) {
             console.error('Login error:', error);
@@ -108,9 +117,16 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const register = async (username, email, password) => {
+    // Modifikasi fungsi register di AuthContext.jsx
+    const register = async (username, email, password, isAdmin = false, adminCode = '') => {
         try {
-            const response = await AuthService.register({ username, email, password });
+            const response = await AuthService.register({
+                username,
+                email,
+                password,
+                isAdmin,
+                adminCode
+            });
             return { success: response.success, message: response.message };
         } catch (error) {
             console.error('Registration error:', error);
@@ -129,6 +145,8 @@ export const AuthProvider = ({ children }) => {
         } finally {
             localStorage.removeItem('user');
             setUser(null);
+
+            window.location.href = '/';
         }
     };
 
