@@ -115,7 +115,7 @@ const Reservation = () => {
             
             // Redirect after 2 seconds
             setTimeout(() => {
-                navigate('/my-reservations');
+                navigate('/approval');
             }, 2000);
             
         } catch (err) {
@@ -183,6 +183,7 @@ const Reservation = () => {
 
                 <div className="bg-white rounded-lg shadow-md p-6 mb-8">
                     <h2 className="text-xl font-qanelas font-[800] mb-4 text-gray-800">Detail Ruangan</h2>
+
                     <div className="flex flex-col md:flex-row">
                         <div className="md:w-1/3 mb-4 md:mb-0">
                             <div className="h-48 bg-gray-200 rounded-lg overflow-hidden">
@@ -230,7 +231,6 @@ const Reservation = () => {
 
                 <div className="bg-white rounded-lg shadow-md p-6">
                     <h2 className="text-xl font-qanelas font-[800] mb-4 text-gray-800">Form Reservasi</h2>
-
                     <form onSubmit={handleSubmit}>
                         <div className="mb-4">
                             <label className="block text-gray-700 font-medium mb-2" htmlFor="purpose">
@@ -270,6 +270,7 @@ const Reservation = () => {
                                 <input
                                     type="time"
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800 font-normal"
+
                                     id="startTime"
                                     value={startTime}
                                     onChange={(e) => setStartTime(e.target.value)}
@@ -310,6 +311,7 @@ const Reservation = () => {
 
                         <div className="mb-6">
                             <label className="block text-gray-700 font-medium mb-2" htmlFor="notes">
+
                                 Catatan (Optional)
                             </label>
                             <textarea
