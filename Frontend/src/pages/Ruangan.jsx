@@ -20,8 +20,6 @@ const Ruangan = () => {
                     RuanganService.getRuanganByGedung(buildingId)
                 ]);
                 
-                console.log('Building data from API:', buildingData); // Untuk debugging
-                
                 setBuilding(buildingData);
                 setRooms(roomsData);
                 setError(null);
@@ -38,50 +36,64 @@ const Ruangan = () => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-[calc(100vh-64px)] pt-16">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+            <div className="pt-16 flex justify-center items-center h-screen font-qanelas bg-white">
+                <div className="flex flex-col items-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue mb-4"></div>
+                    <p className="text-primary-blue font-medium">Loading...</p>
+                </div>
             </div>
         );
     }
 
     if (error || !building) {
         return (
-            <div className="pt-16 container mx-auto px-4 py-8">
+            <div className="pt-16 container mx-auto px-4 py-8 bg-white">
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                     {error || "Building not found"}
+                </div>
+                <div className="mt-4">
+                    <Link 
+                        to="/gedung"
+                        className="text-primary-blue hover:text-bem-darkblue font-medium transition-colors"
+                    >
+                        &larr; Kembali ke Daftar Gedung
+                    </Link>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="pt-16 container mx-auto px-4 py-8">
+        <div className="pt-16 container mx-auto px-4 py-8 bg-white">
             <div className="flex items-center mb-6">
-                <Link to="/gedung" className="text-blue-600 hover:underline mr-2">
+                <Link 
+                    to="/gedung" 
+                    className="text-primary-blue hover:text-bem-darkblue font-medium transition-colors"
+                >
                     &larr; Kembali ke Daftar Gedung
                 </Link>
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-                <h1 className="text-3xl font-bold mb-2">{building?.name}</h1>
-                <p className="text-gray-600 mb-4">{building?.location}</p>
-                <div className="text-black grid grid-cols-1 md:grid-cols-3 gap-4">
+                <h1 className="text-3xl font-qanelas font-[950] mb-2 text-primary-blue">{building?.name}</h1>
+                <p className="text-gray-600 mb-4 font-normal">{building?.location}</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-800">
                     <div>
-                        <span className="text-gray-700 font-semibold">Jam Operasional:</span>
-                        <span className="ml-2">{building?.jam_operasional || building?.operationHours || "N/A"}</span>
+                        <span className="text-gray-700 font-medium">Jam Operasional:</span>
+                        <span className="ml-2 font-normal">{building?.jam_operasional || building?.operationHours || "N/A"}</span>
                     </div>
                     <div>
-                        <span className="text-gray-700 font-semibold">Jumlah Ruangan:</span>
-                        <span className="ml-2">{building?.jumlah_ruangan || rooms.length}</span>
+                        <span className="text-gray-700 font-medium">Jumlah Ruangan:</span>
+                        <span className="ml-2 font-normal">{building?.jumlah_ruangan || rooms.length}</span>
                     </div>
                     <div>
-                        <span className="text-gray-700 font-semibold">Pengelola:</span>
-                        <span className="ml-2">{building?.pengelola || building?.manager || "N/A"}</span>
+                        <span className="text-gray-700 font-medium">Pengelola:</span>
+                        <span className="ml-2 font-normal">{building?.pengelola || building?.manager || "N/A"}</span>
                     </div>
                 </div>
             </div>
 
-            <h2 className="text-2xl font-bold mb-4">Daftar Ruangan</h2>
+            <h2 className="text-2xl font-qanelas font-[800] mb-4 text-gray-800">Daftar Ruangan</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {rooms.map((room) => (
@@ -98,28 +110,28 @@ const Ruangan = () => {
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-gray-500">
+                                <div className="w-full h-full flex items-center justify-center text-gray-500 font-normal">
                                     No Image Available
                                 </div>
                             )}
                         </div>
                         <div className="p-4">
-                            <h3 className="text-xl font-bold mb-2">{room.name}</h3>
-                            <div className="grid grid-cols-2 gap-y-2 text-sm">
+                            <h3 className="text-xl font-qanelas font-[700] mb-2 text-gray-800">{room.name}</h3>
+                            <div className="grid grid-cols-2 gap-y-2 text-sm font-normal text-gray-800">
                                 <div>
-                                    <span className="text-gray-700 font-semibold">Kapasitas:</span>
+                                    <span className="text-gray-700 font-medium">Kapasitas:</span>
                                     <span className="ml-1">{room.capacity} orang</span>
                                 </div>
                                 <div>
-                                    <span className="text-gray-700 font-semibold">Lantai:</span>
+                                    <span className="text-gray-700 font-medium">Lantai:</span>
                                     <span className="ml-1">{room.floor}</span>
                                 </div>
                                 <div>
-                                    <span className="text-gray-700 font-semibold">Luas:</span>
+                                    <span className="text-gray-700 font-medium">Luas:</span>
                                     <span className="ml-1">{room.size} m²</span>
                                 </div>
                                 <div>
-                                    <span className="text-gray-700 font-semibold">Tipe:</span>
+                                    <span className="text-gray-700 font-medium">Tipe:</span>
                                     <span className="ml-1">{room.type}</span>
                                 </div>
                             </div>
@@ -130,7 +142,13 @@ const Ruangan = () => {
 
             {rooms.length === 0 && (
                 <div className="bg-gray-100 p-8 rounded-lg text-center">
-                    <p className="text-gray-600">Tidak ada ruangan yang tersedia di gedung ini.</p>
+                    <p className="text-gray-600 font-normal">Tidak ada ruangan yang tersedia di gedung ini.</p>
+                    <Link 
+                        to="/gedung"
+                        className="mt-4 inline-block text-primary-blue hover:text-bem-darkblue font-medium transition-colors"
+                    >
+                        Kembali ke Daftar Gedung
+                    </Link>
                 </div>
             )}
         </div>

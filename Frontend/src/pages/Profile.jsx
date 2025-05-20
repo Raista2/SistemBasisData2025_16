@@ -112,7 +112,7 @@ const Profile = () => {
     return (
         <div className="pt-16 container mx-auto px-4 py-8 bg-white">
             <div className="max-w-2xl mx-auto">
-                <h1 className="text-3xl font-bold mb-6 text-primary-blue">Profil Pengguna</h1>
+                <h1 className="text-3xl font-[950] mb-6 text-primary-blue">Profil Pengguna</h1>
 
                 {success && (
                     <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
@@ -133,7 +133,7 @@ const Profile = () => {
                             {!editMode && (
                                 <button
                                     onClick={() => setEditMode(true)}
-                                    className="text-primary-blue hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors"
+                                    className="text-primary-white hover:bg-primary-blue hover:text-yellow py-1 px-2 rounded transition-colors"
                                 >
                                     Edit
                                 </button>
@@ -148,7 +148,7 @@ const Profile = () => {
                                     </label>
                                     <input
                                         type="text"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-white-800"
                                         id="username"
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
@@ -162,7 +162,7 @@ const Profile = () => {
                                     </label>
                                     <input
                                         type="email"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-white-800"
                                         id="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -174,7 +174,7 @@ const Profile = () => {
                                     <button
                                         type="button"
                                         onClick={cancelEdit}
-                                        className="px-4 py-2 text-gray-700 hover:text-gray-900"
+                                        className="px-4 py-2 text-white-700 hover:text-white-900"
                                     >
                                         Batal
                                     </button>
@@ -243,7 +243,7 @@ const Profile = () => {
                             {!passwordChangeMode && (
                                 <button
                                     onClick={() => setPasswordChangeMode(true)}
-                                    className="text-primary-blue hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors"
+                                    className="text-primary-white hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors"
                                 >
                                     Ubah Password
                                 </button>
@@ -340,7 +340,7 @@ const Profile = () => {
                             <p className="text-3xl font-bold text-gray-800">{user.totalReservations || 0}</p>
                             <button
                                 onClick={() => navigate('/my-reservations')}
-                                className="mt-2 text-primary-blue hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors text-sm"
+                                className="mt-2 text-primary-white hover:bg-primary-blue hover:text-yellow py-1 px-2 rounded transition-colors text-sm"
                             >
                                 Lihat semua reservasi
                             </button>
@@ -350,7 +350,7 @@ const Profile = () => {
                             <p className="text-3xl font-bold text-gray-800">{user.approvedReservations || 0}</p>
                             <button
                                 onClick={() => navigate('/my-reservations?status=approved')}
-                                className="mt-2 text-primary-blue hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors text-sm"
+                                className="mt-2 text-primary-white hover:bg-primary-blue hover:text-yellow py-1 px-2 rounded transition-colors text-sm"
                             >
                                 Lihat reservasi disetujui
                             </button>

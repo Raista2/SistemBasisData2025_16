@@ -115,7 +115,7 @@ const Reservation = () => {
             
             // Redirect after 2 seconds
             setTimeout(() => {
-                navigate('/approval');
+                navigate('/my-reservations');
             }, 2000);
             
         } catch (err) {
@@ -128,7 +128,7 @@ const Reservation = () => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-[calc(100vh-64px)] pt-16 bg-white">
+            <div className="pt-16 flex justify-center items-center h-screen font-qanelas bg-white">
                 <div className="flex flex-col items-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue mb-4"></div>
                     <p className="text-primary-blue font-medium">Loading...</p>
@@ -143,6 +143,14 @@ const Reservation = () => {
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                     {error || "Room not found"}
                 </div>
+                <div className="mt-4">
+                    <Link 
+                        to="/reservation"
+                        className="text-primary-blue hover:text-bem-darkblue font-medium"
+                    >
+                        &larr; Kembali ke Daftar Ruangan
+                    </Link>
+                </div>
             </div>
         );
     }
@@ -150,6 +158,15 @@ const Reservation = () => {
     return (
         <div className="pt-16 container mx-auto px-4 py-8 bg-white">
             <div className="max-w-4xl mx-auto">
+                <div className="flex items-center mb-6">
+                    <Link 
+                        to="/reservation"
+                        className="text-primary-blue hover:text-bem-darkblue font-medium mr-4"
+                    >
+                        &larr; Kembali ke Daftar Ruangan
+                    </Link>
+                </div>
+
                 <h1 className="text-3xl font-qanelas font-[950] mb-6 text-primary-blue">Reservasi Ruangan</h1>
 
                 {submitSuccess && (
@@ -202,7 +219,7 @@ const Reservation = () => {
                                     <span className="text-gray-700 font-medium">Tipe:</span>
                                     <span className="ml-2">{room.type}</span>
                                 </div>
-                                <div>
+                                <div className="col-span-2">
                                     <span className="text-gray-700 font-medium">Fasilitas:</span>
                                     <span className="ml-2">{room.facilities || "N/A"}</span>
                                 </div>

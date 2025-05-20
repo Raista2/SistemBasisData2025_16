@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import GedungService from '../services/GedungService';
 import PeminjamanService from '../services/PeminjamanService';
 import RuanganService from '../services/RuanganService';
+import bgUI from '../assets/images/bg-ui.png';
 
 const HomePage = () => {
     const { user } = useAuth();
@@ -18,14 +19,97 @@ const HomePage = () => {
     const [recentReservations, setRecentReservations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    
+    // State for parallax effect
+    const [scrollY, setScrollY] = useState(0);
+    
+    // Ref for the continuous background
+    const backgroundRef = useRef(null);
+    
+    // Add listener for scroll event to create parallax effect
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrollY(window.pageYOffset);
+        };
+        
+        window.addEventListener('scroll', handleScroll);
+        
+        // Call once on mount to set initial position
+        handleScroll();
+        
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
-            // ... fetching logic (keep as-is)
-            // Sets stats and recentReservations
+            try {
+                setLoading(true);
+                
+                // Pastikan semua Promise selesai dengan Promise.all
+                const [buildingsData, roomsData, reservationsData] = await Promise.all([
+                    GedungService.getAllGedung(),
+                    RuanganService.getAllRuangan(),
+                    user ? PeminjamanService.getPeminjamanByUser(user.id) : [],
+                ]);
+                
+                // Hitung reservasi yang pending
+                const pendingReservations = user 
+                    ? reservationsData.filter(r => r.status === 'pending').length 
+                    : 0;
+                
+                // Set stats data
+                setStats({
+                    totalBuildings: buildingsData.length,
+                    totalRooms: roomsData.length,
+                    totalReservations: reservationsData.length,
+                    pendingReservations: pendingReservations
+                });
+                
+                // Set recent reservations (sort by date, take last 5)
+                if (user && reservationsData.length > 0) {
+                    const sortedReservations = [...reservationsData]
+                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                        .slice(0, 5);
+                    
+                    setRecentReservations(sortedReservations);
+                }
+                
+                setError(null);
+            } catch (err) {
+                console.error('Error fetching homepage data:', err);
+                setError('Gagal memuat data. Silakan refresh halaman.');
+                
+                // Set default stats jika gagal fetch
+                setStats({
+                    totalBuildings: 0,
+                    totalRooms: 0,
+                    totalReservations: 0,
+                    pendingReservations: 0
+                });
+            } finally {
+                // Penting: selalu akhiri loading state
+                setLoading(false);
+            }
         };
         
         fetchData();
+        
+        // Tambahkan timeout untuk menghindari loading tak terbatas
+        const timeoutId = setTimeout(() => {
+            if (loading) {
+                setLoading(false);
+                setStats({
+                    totalBuildings: 0,
+                    totalRooms: 0,
+                    totalReservations: 0,
+                    pendingReservations: 0
+                });
+            }
+        }, 10000); // 10 detik timeout
+        
+        return () => clearTimeout(timeoutId);
     }, [user]);
 
     const formatDate = (dateString) => {
@@ -39,19 +123,66 @@ const HomePage = () => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-[calc(100vh-64px)] pt-16">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue"></div>
+            <div className="pt-16 flex justify-center items-center h-screen font-qanelas bg-white">
+                <div className="flex flex-col items-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue mb-4"></div>
+                    <p className="text-primary-blue font-medium">Loading...</p>
+                </div>
             </div>
         );
     }
 
+    // Parallax background style with bg-ftui.png
+    const backgroundStyle = {
+        backgroundImage: `url(${bgUI})`,
+        backgroundAttachment: 'fixed',
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: -1,
+        opacity: 0.2,
+        // Add this to control parallax direction and speed
+        transform: `translateY(${-window.scrollY * 0.15}px)` // Negative value reverses direction, 0.15 slows it down
+    };
+    
+    // Blur overlay for background
+    const overlayStyle = {
+        backdropFilter: 'blur(8px)',
+        backgroundColor: 'rgba(17, 24, 39, 0.85)', // Semi-transparent dark background 
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: -1,
+    };
+
     return (
-        <div className="pt-16 min-h-screen">
+        <div className="pt-16 min-h-screen font-qanelas">
+            {/* Continuous parallax background for all sections */}
+            <div 
+                ref={backgroundRef}
+                className="fixed inset-0 bg-cover bg-center z-0 pointer-events-none"
+                style={{ 
+                    backgroundImage: `url(${bgUI})`,
+                    transform: `translateY(${scrollY * 0.3}px)`,
+                    opacity: 0.15
+                }}
+            ></div>
+            
             {/* Hero Section with BEM FTUI style */}
-            <div className="bg-primary-blue text-white py-16">
-                <div className="container mx-auto px-4">
+            <div className="bg-primary-blue text-white py-16 relative overflow-hidden">
+                {/* Blurred background effect for hero only */}
+                <div className="absolute inset-0 bg-cover bg-center opacity-20" 
+                    style={{ backgroundImage: `url(${bgUI})` }}></div>
+                
+                <div className="container mx-auto px-4 relative z-10">
                     <div className="max-w-3xl mx-auto text-center">
-                        <h1 className="text-4xl md:text-5xl font-black mb-4 font-qanelas">Pinjam Ruang FT V2</h1>
+                        <h1 className="text-4xl md:text-5xl font-qanelas font-[950] mb-4">Pinjam Ruang FT V2</h1>
                         <p className="text-xl mb-8 font-medium">Sistem peminjaman ruangan Fakultas Teknik yang lebih efisien, cepat, dan mudah digunakan</p>
                         {!user ? (
                             <div className="space-x-4">
@@ -76,24 +207,26 @@ const HomePage = () => {
                 </div>
             </div>
 
-            {/* Statistics with dark background */}
-            <div className="bg-gray-900 py-12">
-                <div className="container mx-auto px-4">
+            {/* Statistics section */}
+            <div className="relative py-12">
+                <div style={backgroundStyle}></div>
+                <div style={overlayStyle}></div>
+                <div className="container mx-auto px-4 relative z-10">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div className="bg-white rounded py-6 px-4 text-center shadow-lg">
-                            <span className="text-3xl font-bold text-primary-blue">{stats.totalBuildings}</span>
+                        <div className="bg-white rounded-lg py-6 px-4 text-center shadow-lg">
+                            <span className="text-3xl font-qanelas font-[950] text-primary-blue">{stats.totalBuildings}</span>
                             <p className="text-gray-600 mt-2">Total Gedung</p>
                         </div>
-                        <div className="bg-white rounded py-6 px-4 text-center shadow-lg">
-                            <span className="text-3xl font-bold text-primary-blue">{stats.totalRooms}</span>
+                        <div className="bg-white rounded-lg py-6 px-4 text-center shadow-lg">
+                            <span className="text-3xl font-qanelas font-[950] text-primary-blue">{stats.totalRooms}</span>
                             <p className="text-gray-600 mt-2">Total Ruangan</p>
                         </div>
-                        <div className="bg-white rounded py-6 px-4 text-center shadow-lg">
-                            <span className="text-3xl font-bold text-primary-blue">{stats.totalReservations}</span>
+                        <div className="bg-white rounded-lg py-6 px-4 text-center shadow-lg">
+                            <span className="text-3xl font-qanelas font-[950] text-primary-blue">{stats.totalReservations}</span>
                             <p className="text-gray-600 mt-2">Total Reservasi</p>
                         </div>
-                        <div className="bg-white rounded py-6 px-4 text-center shadow-lg">
-                            <span className="text-3xl font-bold text-primary-blue">{stats.pendingReservations}</span>
+                        <div className="bg-white rounded-lg py-6 px-4 text-center shadow-lg">
+                            <span className="text-3xl font-qanelas font-[950] text-primary-blue">{stats.pendingReservations}</span>
                             <p className="text-gray-600 mt-2">Menunggu Persetujuan</p>
                         </div>
                     </div>
@@ -101,9 +234,11 @@ const HomePage = () => {
             </div>
 
             {/* Features block */}
-            <div className="bg-gray-900 py-12">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-10 text-white">Fitur Utama</h2>
+            <div className="relative py-12">
+                <div style={backgroundStyle}></div>
+                <div style={overlayStyle}></div>
+                <div className="container mx-auto px-4 relative z-10">
+                    <h2 className="text-3xl font-qanelas font-[950] text-center mb-10 text-white">Fitur Utama</h2>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div className="bg-white rounded-lg p-6 hover:shadow-xl transition-shadow">
@@ -112,7 +247,7 @@ const HomePage = () => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
                             </div>
-                            <h3 className="text-xl font-bold mb-2 text-gray-800">Reservasi Ruangan</h3>
+                            <h3 className="text-xl font-qanelas font-[800] mb-2 text-gray-800">Reservasi Ruangan</h3>
                             <p className="text-gray-600 mb-4">Pesan ruangan untuk kegiatan akademik, rapat, atau acara lainnya dengan mudah dan cepat.</p>
                             <Link to="/reservation" className="text-primary-blue hover:text-primary-darkblue font-medium">
                                 Buat Reservasi →
@@ -125,7 +260,7 @@ const HomePage = () => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                                 </svg>
                             </div>
-                            <h3 className="text-xl font-bold mb-2 text-gray-800">Peta Gedung</h3>
+                            <h3 className="text-xl font-qanelas font-[800] mb-2 text-gray-800">Peta Gedung</h3>
                             <p className="text-gray-600 mb-4">Lihat lokasi gedung di peta interaktif untuk memudahkan pencarian ruangan yang diinginkan.</p>
                             <Link to="/map" className="text-primary-blue hover:text-primary-darkblue font-medium">
                                 Lihat Peta →
@@ -138,7 +273,7 @@ const HomePage = () => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
-                            <h3 className="text-xl font-bold mb-2 text-gray-800">Status Reservasi</h3>
+                            <h3 className="text-xl font-qanelas font-[800] mb-2 text-gray-800">Status Reservasi</h3>
                             <p className="text-gray-600 mb-4">Pantau status reservasi Anda, lihat riwayat, dan dapatkan notifikasi ketika disetujui.</p>
                             <Link to="/my-reservations" className="text-primary-blue hover:text-primary-darkblue font-medium">
                                 Lihat Status →
@@ -150,9 +285,9 @@ const HomePage = () => {
 
             {/* Recent Reservations */}
             {user && recentReservations.length > 0 && (
-                <div className="bg-gray-900 py-12">
+                <div className="bg-gray-900 bg-opacity-85 py-12 relative z-10">
                     <div className="container mx-auto px-4">
-                        <h2 className="text-2xl font-bold mb-6 text-white">Reservasi Terbaru</h2>
+                        <h2 className="text-2xl font-qanelas font-[800] mb-6 text-white">Reservasi Terbaru</h2>
                         
                         <div className="overflow-hidden rounded-lg shadow-lg">
                             <div className="overflow-x-auto">
@@ -206,13 +341,14 @@ const HomePage = () => {
                 </div>
             )}
 
-            {/* How It Works - Full width color blocks */}
-            <div className="bg-gray-900 py-12">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-10 text-white">Cara Kerja</h2>
+            <div className="relative py-12">
+                <div style={backgroundStyle}></div>
+                <div style={overlayStyle}></div>
+                <div className="container mx-auto px-4 relative z-10">
+                    <h2 className="text-3xl font-[950] text-center mb-10 text-white">Cara Kerja</h2>
                     
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div className="bg-primary-blue text-white p-6 rounded-lg relative text-center">
+                        <div className="bg-primary-blue bg-opacity-90 text-white p-6 rounded-lg relative text-center">
                             <div className="absolute -top-4 -right-4 bg-primary-yellow text-primary-blue w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl">
                                 1
                             </div>
@@ -220,7 +356,7 @@ const HomePage = () => {
                             <p>Pilih gedung dan ruangan yang sesuai dengan kebutuhan Anda dari daftar yang tersedia.</p>
                         </div>
                         
-                        <div className="bg-primary-blue text-white p-6 rounded-lg relative text-center">
+                        <div className="bg-primary-blue bg-opacity-90 text-white p-6 rounded-lg relative text-center">
                             <div className="absolute -top-4 -right-4 bg-primary-yellow text-primary-blue w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl">
                                 2
                             </div>
@@ -228,7 +364,7 @@ const HomePage = () => {
                             <p>Isi form reservasi dengan tanggal, waktu, jumlah peserta, dan keperluan peminjaman.</p>
                         </div>
                         
-                        <div className="bg-primary-blue text-white p-6 rounded-lg relative text-center">
+                        <div className="bg-primary-blue bg-opacity-90 text-white p-6 rounded-lg relative text-center">
                             <div className="absolute -top-4 -right-4 bg-primary-yellow text-primary-blue w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl">
                                 3
                             </div>
@@ -236,7 +372,7 @@ const HomePage = () => {
                             <p>Admin akan memeriksa dan menyetujui reservasi Anda dalam waktu singkat.</p>
                         </div>
                         
-                        <div className="bg-primary-blue text-white p-6 rounded-lg relative text-center">
+                        <div className="bg-primary-blue bg-opacity-90 text-white p-6 rounded-lg relative text-center">
                             <div className="absolute -top-4 -right-4 bg-primary-yellow text-primary-blue w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl">
                                 4
                             </div>
@@ -248,9 +384,13 @@ const HomePage = () => {
             </div>
 
             {/* Call to Action - Full width blue block */}
-            <div className="bg-primary-blue text-white py-12">
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-3xl font-bold mb-4">Siap untuk membuat reservasi?</h2>
+            <div className="bg-primary-blue text-white py-12 relative overflow-hidden">
+                {/* Blurred background effect */}
+                <div className="absolute inset-0 bg-cover bg-center opacity-20" 
+                    style={{ backgroundImage: `url(${bgUI})` }}></div>
+                
+                <div className="container mx-auto px-4 text-center relative z-10">
+                    <h2 className="text-3xl font-qanelas font-[950] mb-4">Siap untuk membuat reservasi?</h2>
                     <p className="text-xl mb-6">Mulai pesan ruangan sekarang dan manfaatkan fasilitas kampus dengan optimal</p>
                     <Link 
                         to={user ? "/reservation" : "/login"} 
@@ -266,7 +406,7 @@ const HomePage = () => {
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row justify-between items-center">
                         <div className="mb-4 md:mb-0">
-                            <h3 className="text-xl font-bold">Pinjam Ruang FT V2</h3>
+                            <h3 className="text-xl font-qanelas font-[800]">Pinjam Ruang FT V2</h3>
                             <p className="text-primary-blue">Sistem Reservasi Ruangan Fakultas Teknik</p>
                         </div>
                         <div className="flex flex-col md:flex-row gap-4 md:gap-8">

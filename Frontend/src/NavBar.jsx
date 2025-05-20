@@ -96,7 +96,7 @@ function NavBar({ user, onLogout }) {
             <div className="w-full px-4 flex justify-between items-center">
                 {/* Logo and main navigation */}
                 <div className="flex items-center gap-4">
-                    <Link to="/" className="text-2xl font-bold text-white font-qanelas">Room Reservation</Link>
+                    <Link to="/" className="text-2xl font-[950] text-white font-qanelas">Pinjam Ruang FT v2</Link>
 
                     {/* Desktop Navigation Links */}
                     <div className="hidden lg:flex items-center space-x-3">
