@@ -4,8 +4,21 @@ import { Link, useLocation } from 'react-router-dom';
 function NavBar({ user, onLogout }) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [activeHover, setActiveHover] = useState(null);
     const dropdownRef = useRef(null);
     const location = useLocation();
+
+    // Scroll effect untuk navbar
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollTop = window.pageYOffset;
+            setIsScrolled(scrollTop > 50);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -92,167 +105,412 @@ function NavBar({ user, onLogout }) {
     });
 
     return (
-        <nav className="fixed top-0 left-0 right-0 w-full bg-primary-blue text-white p-3 shadow-md z-50 opacity-95 border-b-2 border-primary-yellow">
-            <div className="w-full px-4 flex justify-between items-center">
-                {/* Logo and main navigation */}
-                <div className="flex items-center gap-4">
-                    <Link to="/" className="text-2xl font-[950] text-white font-qanelas">Pinjam Ruang FT v2</Link>
+        <>
+            {/* Enhanced CSS Styles for animations */}
+            <style jsx>{`
+                /* Advanced Logo Animation */
+                .logo-container {
+                    position: relative;
+                    display: inline-block;
+                    padding: 4px 8px; /* Add padding untuk space */
+                }
+                
+                .logo-main {
+                    display: inline-block;
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    transform-origin: center;
+                }
+                
+                .logo-container:hover .logo-main {
+                    transform: scale(1.05);
+                    text-shadow: 0 4px 8px rgba(255, 193, 7, 0.5);
+                }
 
-                    {/* Desktop Navigation Links */}
-                    <div className="hidden lg:flex items-center space-x-3">
-                        {filteredLinks.map(link => (
-                            <Link 
-                                key={link.path}
-                                to={link.path}
-                                className={`text-white hover:text-primary-yellow transition-colors px-3 py-2 rounded-md font-medium ${
-                                    location.pathname === link.path ? 'bg-bem-darkblue' : ''
-                                }`}
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-                    </div>
-                </div>
+                /* Magnetic hover effect for nav links */
+                .nav-link {
+                    position: relative;
+                    overflow: hidden;
+                    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                }
+                
+                .nav-link::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255, 193, 7, 0.4), transparent);
+                    transition: left 0.5s;
+                }
+                
+                .nav-link:hover::before {
+                    left: 100%;
+                }
+                
+                .nav-link:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+                }
 
-                {/* Mobile menu button */}
-                <div className="lg:hidden">
-                    <button
-                        onClick={toggleMobileMenu}
-                        className="text-white p-1"
-                        aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-                    >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
-                            />
-                        </svg>
-                    </button>
-                </div>
+                /* Floating animation for icons */
+                .floating-icon {
+                    animation: float 3s ease-in-out infinite;
+                }
+                
+                .floating-icon:nth-child(2n) {
+                    animation-delay: -1.5s;
+                }
+                
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-3px); }
+                }
 
-                {/* Auth related links */}
-                <div className="hidden lg:flex items-center gap-4">
-                    {user ? (
-                        <div className="flex items-center gap-4" ref={dropdownRef}>
-                            <div className="relative">
-                                <button
-                                    onClick={toggleDropdown}
-                                    className="flex items-center gap-1 font-bold text-l hover:text-primary-yellow transition-colors"
-                                >
-                                    {user.username}
-                                    <svg
-                                        className={`h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
+                /* Morphing hamburger menu */
+                .hamburger-line {
+                    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                    transform-origin: center;
+                }
+                
+                .hamburger-open .hamburger-line:nth-child(1) {
+                    transform: rotate(45deg) translate(6px, 6px);
+                }
+                
+                .hamburger-open .hamburger-line:nth-child(2) {
+                    opacity: 0;
+                    transform: scale(0);
+                }
+                
+                .hamburger-open .hamburger-line:nth-child(3) {
+                    transform: rotate(-45deg) translate(6px, -6px);
+                }
 
-                                {isDropdownOpen && (
-                                    <div className="absolute top-full right-0 mt-2 bg-bem-darkblue rounded-md shadow-lg p-2 min-w-[160px] z-20">
-                                        <Link
-                                            to="/profile"
-                                            className="block w-full text-left py-2 px-3 hover:bg-primary-blue rounded transition-colors"
-                                            onClick={closeDropdown}
-                                        >
-                                            Profile
-                                        </Link>
-                                        <button
-                                            onClick={onLogout}
-                                            className="block w-full text-left py-2 px-3 hover:bg-primary-blue rounded transition-colors mt-1"
-                                        >
-                                            Logout
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    ) : (
-                        <>
-                            <Link to="/login" className="text-white hover:text-primary-yellow font-medium">Login</Link>
-                            <Link to="/register" className="bg-primary-yellow text-primary-blue hover:bg-yellow-400 py-1 px-4 rounded transition-colors font-semibold">Register</Link>
-                        </>
-                    )}
-                </div>
-            </div>
+                /* Glassmorphism dropdown */
+                .glass-dropdown {
+                    backdrop-filter: blur(20px);
+                    background: rgba(30, 58, 138, 0.9);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                }
 
-            {/* Mobile Navigation Menu */}
-            {isMobileMenuOpen && (
-                <div className="lg:hidden bg-bem-darkblue mt-3 p-3 rounded-md">
-                    <div className="flex flex-col space-y-2">
-                        {filteredLinks.map(link => (
-                            <Link
-                                key={link.path}
-                                to={link.path}
-                                className={`flex items-center text-white py-2 px-3 hover:bg-primary-blue rounded ${
-                                    location.pathname === link.path ? 'bg-primary-blue' : ''
-                                }`}
-                                onClick={closeMobileMenu}
-                            >
-                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={link.icon} />
-                                </svg>
-                                {link.label}
-                            </Link>
-                        ))}
+                /* Sliding mobile menu */
+                .mobile-menu {
+                    transform: translateY(-20px);
+                    opacity: 0;
+                    animation: slideInDown 0.3s ease-out forwards;
+                }
+                
+                @keyframes slideInDown {
+                    to {
+                        transform: translateY(0);
+                        opacity: 1;
+                    }
+                }
 
-                        {user ? (
-                            <div className="pt-2 mt-2 border-t border-primary-blue">
-                                <Link
-                                    to="/profile"
-                                    className="flex items-center text-white py-2 px-3 hover:bg-primary-blue rounded"
-                                    onClick={closeMobileMenu}
-                                >
-                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                    </svg>
-                                    Profile
-                                </Link>
-                                <button
-                                    onClick={() => {
-                                        onLogout();
-                                        closeMobileMenu();
+                /* Pulse animation for active items */
+                .pulse-glow {
+                    animation: pulseGlow 2s ease-in-out infinite;
+                }
+                
+                @keyframes pulseGlow {
+                    0%, 100% {
+                        box-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+                    }
+                    50% {
+                        box-shadow: 0 0 20px rgba(255, 193, 7, 0.8);
+                    }
+                }
+
+                /* Smooth navbar transition */
+                .navbar-scrolled {
+                    backdrop-filter: blur(20px);
+                    background: rgba(37, 99, 235, 0.95);
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                }
+
+                /* Ripple effect */
+                .ripple {
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .ripple::after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 0;
+                    height: 0;
+                    border-radius: 50%;
+                    background: rgba(255, 193, 7, 0.5);
+                    transform: translate(-50%, -50%);
+                    transition: width 0.6s, height 0.6s;
+                }
+                
+                .ripple:active::after {
+                    width: 300px;
+                    height: 300px;
+                }
+
+                /* Button hover morphing */
+                .morph-button {
+                    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .morph-button::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+                    transition: left 0.5s;
+                }
+                
+                .morph-button:hover::before {
+                    left: 100%;
+                }
+                
+                .morph-button:hover {
+                    transform: perspective(1000px) rotateX(10deg) scale(1.05);
+                    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+                }
+
+                /* Text reveal animation - Fixed */
+                .text-reveal {
+                    position: relative;
+                    display: inline-block;
+                }
+                
+                .text-reveal::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 0%;
+                    height: 100%;
+                    background: rgba(255, 193, 7, 0.3);
+                    transition: width 0.3s ease-out;
+                    z-index: -1;
+                }
+                
+                .text-reveal:hover::after {
+                    width: 100%;
+                }
+            `}</style>
+
+            <nav className={`fixed top-0 left-0 right-0 w-full p-3 shadow-md z-50 transition-all duration-500 border-b-2 border-primary-yellow ${
+                isScrolled 
+                    ? 'navbar-scrolled' 
+                    : 'bg-primary-blue text-white opacity-95'
+            }`}>
+                <div className="w-full px-4 flex justify-between items-center">
+                    {/* Logo and main navigation */}
+                    <div className="flex items-center gap-4">
+                        {/* Enhanced Animated Logo */}
+                        <Link to="/" className="text-2xl font-[950] text-white font-qanelas logo-container">
+                            <span className="logo-main text-reveal">
+                                Pinjam Ruang FT 2.0
+                            </span>
+                        </Link>
+
+                        {/* Desktop Navigation Links with enhanced animations */}
+                        <div className="hidden lg:flex items-center space-x-1">
+                            {filteredLinks.map((link, index) => (
+                                <Link 
+                                    key={link.path}
+                                    to={link.path}
+                                    className={`nav-link text-white hover:text-primary-yellow transition-all duration-300 px-4 py-2 rounded-lg font-medium ripple ${
+                                        location.pathname === link.path ? 'bg-bem-darkblue pulse-glow' : ''
+                                    }`}
+                                    onMouseEnter={() => setActiveHover(index)}
+                                    onMouseLeave={() => setActiveHover(null)}
+                                    style={{
+                                        transform: activeHover === index ? 'translateY(-2px) scale(1.05)' : 'translateY(0) scale(1)',
+                                        transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
                                     }}
-                                    className="flex items-center w-full text-left text-white py-2 px-3 hover:bg-primary-blue rounded"
                                 >
-                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                    </svg>
-                                    Logout
-                                </button>
+                                    <span className="flex items-center gap-2">
+                                        <svg className="w-4 h-4 floating-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={link.icon} />
+                                        </svg>
+                                        {link.label}
+                                    </span>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Enhanced Mobile menu button */}
+                    <div className="lg:hidden">
+                        <button
+                            onClick={toggleMobileMenu}
+                            className={`text-white p-2 rounded-lg transition-all duration-300 hover:bg-white/10 ${isMobileMenuOpen ? 'hamburger-open' : ''}`}
+                            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+                        >
+                            <div className="w-6 h-6 flex flex-col justify-center items-center">
+                                <span className="hamburger-line w-6 h-0.5 bg-current mb-1"></span>
+                                <span className="hamburger-line w-6 h-0.5 bg-current mb-1"></span>
+                                <span className="hamburger-line w-6 h-0.5 bg-current"></span>
+                            </div>
+                        </button>
+                    </div>
+
+                    {/* Enhanced Auth related links */}
+                    <div className="hidden lg:flex items-center gap-3">
+                        {user ? (
+                            <div className="flex items-center gap-4" ref={dropdownRef}>
+                                <div className="relative">
+                                    <button
+                                        onClick={toggleDropdown}
+                                        className="flex items-center gap-2 font-bold text-lg hover:text-primary-yellow transition-all duration-300 px-3 py-2 rounded-lg morph-button"
+                                    >
+                                        <div className="w-8 h-8 bg-primary-yellow text-primary-blue rounded-full flex items-center justify-center font-bold text-sm">
+                                            {user.username.charAt(0).toUpperCase()}
+                                        </div>
+                                        {user.username}
+                                        <svg
+                                            className={`h-4 w-4 transition-all duration-300 ${isDropdownOpen ? 'rotate-180 scale-110' : ''}`}
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+
+                                    {isDropdownOpen && (
+                                        <div className="absolute top-full right-0 mt-2 glass-dropdown rounded-xl shadow-xl p-3 min-w-[180px] z-20 animate-fade-in-down">
+                                            <Link
+                                                to="/profile"
+                                                className="flex items-center gap-3 w-full text-left py-3 px-4 hover:bg-white/10 rounded-lg transition-all duration-300 text-white hover:scale-105"
+                                                onClick={closeDropdown}
+                                            >
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                </svg>
+                                                Profile
+                                            </Link>
+                                            <button
+                                                onClick={onLogout}
+                                                className="flex items-center gap-3 w-full text-left py-3 px-4 hover:bg-red-500/20 rounded-lg transition-all duration-300 mt-1 text-white hover:scale-105"
+                                            >
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                                </svg>
+                                                Logout
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         ) : (
-                            <div className="pt-2 mt-2 border-t border-primary-blue flex flex-col space-y-2">
-                                <Link
-                                    to="/login"
-                                    className="flex items-center text-white py-2 px-3 hover:bg-primary-blue rounded"
-                                    onClick={closeMobileMenu}
+                            <>
+                                <Link 
+                                    to="/login" 
+                                    className="text-white hover:text-primary-yellow font-medium px-4 py-2 rounded-lg transition-all duration-300 hover:bg-white/10 morph-button"
                                 >
-                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                                    </svg>
-                                    Login
+                                    Masuk
                                 </Link>
-                                <Link
-                                    to="/register"
-                                    className="flex items-center text-primary-blue py-2 px-3 bg-primary-yellow hover:bg-yellow-400 rounded font-semibold"
-                                    onClick={closeMobileMenu}
+                                <Link 
+                                    to="/register" 
+                                    className="bg-primary-yellow text-primary-blue hover:bg-yellow-400 py-2 px-6 rounded-lg transition-all duration-300 font-semibold morph-button hover:shadow-lg"
                                 >
-                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                                    </svg>
-                                    Register
+                                    Daftar
                                 </Link>
-                            </div>
+                            </>
                         )}
                     </div>
                 </div>
-            )}
-        </nav>
+
+                {/* Enhanced Mobile Navigation Menu */}
+                {isMobileMenuOpen && (
+                    <div className="lg:hidden glass-dropdown mt-4 p-4 rounded-xl mobile-menu">
+                        <div className="flex flex-col space-y-1">
+                            {filteredLinks.map((link, index) => (
+                                <Link
+                                    key={link.path}
+                                    to={link.path}
+                                    className={`flex items-center text-white py-3 px-4 hover:bg-white/10 rounded-lg transition-all duration-300 morph-button ${
+                                        location.pathname === link.path ? 'bg-primary-blue pulse-glow' : ''
+                                    }`}
+                                    onClick={closeMobileMenu}
+                                    style={{
+                                        animationDelay: `${index * 0.1}s`,
+                                        animation: 'slideInDown 0.3s ease-out forwards'
+                                    }}
+                                >
+                                    <svg className="w-5 h-5 mr-3 floating-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={link.icon} />
+                                    </svg>
+                                    {link.label}
+                                </Link>
+                            ))}
+
+                            {user ? (
+                                <div className="pt-3 mt-3 border-t border-white/20">
+                                    <div className="flex items-center gap-3 py-2 px-4 text-white">
+                                        <div className="w-10 h-10 bg-primary-yellow text-primary-blue rounded-full flex items-center justify-center font-bold">
+                                            {user.username.charAt(0).toUpperCase()}
+                                        </div>
+                                        <span className="font-semibold">{user.username}</span>
+                                    </div>
+                                    <Link
+                                        to="/profile"
+                                        className="flex items-center text-white py-3 px-4 hover:bg-white/10 rounded-lg transition-all duration-300 morph-button"
+                                        onClick={closeMobileMenu}
+                                    >
+                                        <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                        Profile
+                                    </Link>
+                                    <button
+                                        onClick={() => {
+                                            onLogout();
+                                            closeMobileMenu();
+                                        }}
+                                        className="flex items-center w-full text-left text-white py-3 px-4 hover:bg-red-500/20 rounded-lg transition-all duration-300 morph-button"
+                                    >
+                                        <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                        </svg>
+                                        Logout
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="pt-3 mt-3 border-t border-white/20 flex flex-col space-y-2">
+                                    <Link
+                                        to="/login"
+                                        className="flex items-center text-white py-3 px-4 hover:bg-white/10 rounded-lg transition-all duration-300 morph-button"
+                                        onClick={closeMobileMenu}
+                                    >
+                                        <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                        </svg>
+                                        Login
+                                    </Link>
+                                    <Link
+                                        to="/register"
+                                        className="flex items-center text-primary-blue py-3 px-4 bg-primary-yellow hover:bg-yellow-400 rounded-lg font-semibold transition-all duration-300 morph-button"
+                                        onClick={closeMobileMenu}
+                                    >
+                                        <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                        </svg>
+                                        Register
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </nav>
+        </>
     );
 }
 
