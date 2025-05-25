@@ -1,7 +1,4 @@
-import { useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import NavBar from './NavBar.jsx'
 import Login from './pages/Login.jsx'
@@ -17,6 +14,7 @@ import MyReservations from './pages/MyReservations.jsx'
 import ReservationLanding from './pages/ReservationLanding.jsx'
 import Profile from './pages/Profile.jsx'
 import HomePage from './pages/Home.jsx'
+import AddRoom from './pages/AddRoom.jsx'
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const { user, loading } = useAuth();
@@ -87,6 +85,11 @@ function App() {
           <Route path="/profile" element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/add-room/:buildingId" element={
+            <ProtectedRoute requiredRole="admin">
+              <AddRoom />
             </ProtectedRoute>
           } />
         </Routes>

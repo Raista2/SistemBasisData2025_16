@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import GedungService from '../services/GedungService';
 import bgUI from '../assets/images/bg-ui.png';
+import { useAuth } from '../context/AuthContext';
 
 const Gedung = () => {
     const [buildings, setBuildings] = useState([]);
@@ -12,6 +13,9 @@ const Gedung = () => {
     const [viewMode, setViewMode] = useState('grid');
     const [scrollY, setScrollY] = useState(0);
     const backgroundRef = useRef(null);
+    const { user } = useAuth(); 
+
+    const isAdmin = user && user.role === 'admin';
 
     // Parallax scroll handler seperti homepage
     useEffect(() => {
@@ -343,6 +347,19 @@ const Gedung = () => {
                                             >
                                                 Lihat Ruangan
                                             </Link>
+
+                                            {/* Tombol tambah ruangan khusus admin */}
+                                            {isAdmin && (
+                                                <Link
+                                                    to={`/admin/add-room/${building.id}`}
+                                                    className="bg-primary-yellow/80 text-primary-blue px-4 py-2 rounded-lg hover:bg-primary-yellow hover:scale-105 transition-all duration-300 flex items-center"
+                                                >
+                                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                    </svg>
+                                                    Tambah Ruangan
+                                                </Link>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
