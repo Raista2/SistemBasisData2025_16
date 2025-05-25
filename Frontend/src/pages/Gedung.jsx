@@ -192,7 +192,7 @@ const Gedung = () => {
                     height: '200vh',
                     transform: `translateY(${-scrollY * 0.15}px)`,
                     opacity: 1,
-                    filter: 'blur(1px) brightness(0.7)'
+                    filter: 'blur(1px)'
                 }}
             />
             

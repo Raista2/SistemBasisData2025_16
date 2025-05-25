@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "dev": "npm-run-all --parallel dev:backend dev:frontend",
+    "dev:backend": "npm run start:backend:retry",
+    "dev:frontend": "npm run start:frontend:retry",
+    "start:backend:retry": "npm run start:backend || (echo 'Backend failed, retrying in 3 seconds...' && sleep 3 && npm run start:backend:retry)",
+    "start:frontend:retry": "npm run start:frontend || (echo 'Frontend failed, retrying in 3 seconds...' && sleep 3 && npm run start:frontend:retry)",
+    "start:backend": "cd backend && npm run start",
+    "start:frontend": "cd frontend && npm run dev"
+  }
+}
