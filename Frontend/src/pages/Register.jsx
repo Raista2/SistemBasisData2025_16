@@ -84,7 +84,7 @@ const Register = () => {
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     required
-                                    placeholder="FatePlayer"
+                                    placeholder="Username"
                                 />
                             </div>
                             

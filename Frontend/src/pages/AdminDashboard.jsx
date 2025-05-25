@@ -73,13 +73,13 @@ const AdminDashboard = () => {
     const handleAction = async (id, action) => {
         try {
             setActionLoading(id);
-            
-            const notes = action === 'approved' 
-                ? 'Reservasi disetujui oleh admin' 
+
+            const notes = action === 'approved'
+                ? 'Reservasi disetujui oleh admin'
                 : 'Reservasi ditolak oleh admin';
-                
+
             await PeminjamanService.updatePeminjamanStatus(id, action, notes);
-            
+
             // Refresh data
             await fetchReservations(activeTab);
         } catch (err) {
@@ -142,13 +142,13 @@ const AdminDashboard = () => {
             {/* Hero Section with FT UI style blurred background */}
             <div className="bg-primary-blue text-white py-8 relative overflow-hidden">
                 {/* Blurred background effect */}
-                <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: `url(${bgFTUI})` }}></div>                
-                
+                <div className="absolute inset-0 bg-cover bg-center opacity-20" style={{ backgroundImage: `url(${bgFTUI})` }}></div>
+
                 <div className="container mx-auto px-4 relative z-10">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
                         <h1 className="text-4xl font-qanelas font-[950] mb-4 md:mb-0">Dashboard Admin</h1>
                         <div className="flex space-x-2">
-                            <button 
+                            <button
                                 className="bg-white text-primary-blue px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors font-medium"
                                 onClick={() => navigate('/gedung')}
                             >
@@ -156,8 +156,8 @@ const AdminDashboard = () => {
                             </button>
                         </div>
                     </div>
-                    
-                    {/* Stats Section - similar to the screenshot */}
+
+                    {/* Stats Section */}
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
                         <div className="bg-white rounded-lg shadow-md p-6 text-center">
                             <div className="text-4xl font-[950] text-primary-blue mb-2">{reservations.length}</div>
@@ -184,7 +184,7 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             </div>
-            
+
             <div className="container mx-auto px-4 py-8 bg-white">
                 {error && (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
@@ -196,41 +196,33 @@ const AdminDashboard = () => {
                 <div className="border-b border-gray-200 mb-6">
                     <nav className="flex flex-wrap -mb-px">
                         <button
-                            className={`py-4 px-6 font-medium text-sm transition-colors hover:bg-primary-blue hover:text-white rounded-t ${
-                                activeTab === 'pending'
-                                    ? 'border-b-2 border-primary-blue text-primary-blue'
-                                    : 'text-gray-500'
-                            }`}
+                            className={`py-4 px-6 font-medium text-sm transition-colors hover:bg-primary-blue hover:text-white rounded-t ${activeTab === 'pending'
+                                    ? 'bg-primary-blue text-white'
+                                    : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'}`}
                             onClick={() => setActiveTab('pending')}
                         >
                             Menunggu Persetujuan
                         </button>
                         <button
-                            className={`py-4 px-6 font-medium text-sm transition-colors hover:bg-primary-blue hover:text-white rounded-t ${
-                                activeTab === 'approved'
-                                    ? 'border-b-2 border-primary-blue text-primary-blue'
-                                    : 'text-gray-500'
-                            }`}
+                            className={`py-4 px-6 font-medium text-sm transition-colors hover:bg-primary-blue hover:text-white rounded-t ${activeTab === 'approved'
+                                    ? 'bg-primary-blue text-white'
+                                    : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'}`}
                             onClick={() => setActiveTab('approved')}
                         >
                             Disetujui
                         </button>
                         <button
-                            className={`py-4 px-6 font-medium text-sm transition-colors hover:bg-primary-blue hover:text-white rounded-t ${
-                                activeTab === 'rejected'
-                                    ? 'border-b-2 border-primary-blue text-primary-blue'
-                                    : 'text-gray-500'
-                            }`}
+                            className={`py-4 px-6 font-medium text-sm transition-colors hover:bg-primary-blue hover:text-white rounded-t ${activeTab === 'rejected'
+                                    ? 'bg-primary-blue text-white'
+                                    : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'}`}
                             onClick={() => setActiveTab('rejected')}
                         >
                             Ditolak
                         </button>
                         <button
-                            className={`py-4 px-6 font-medium text-sm transition-colors hover:bg-primary-blue hover:text-white rounded-t ${
-                                activeTab === 'all'
-                                    ? 'border-b-2 border-primary-blue text-primary-blue'
-                                    : 'text-gray-500'
-                            }`}
+                            className={`py-4 px-6 font-medium text-sm transition-colors hover:bg-primary-blue hover:text-white rounded-t ${activeTab === 'all'
+                                    ? 'bg-primary-blue text-white'
+                                    : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'}`}
                             onClick={() => setActiveTab('all')}
                         >
                             Semua Reservasi
@@ -391,12 +383,12 @@ const AdminDashboard = () => {
                                         </p>
                                     </div>
                                 </div>
-                                
+
                                 <div className="mb-4">
                                     <p className="text-sm text-gray-500">Keperluan</p>
                                     <p className="font-medium">{selectedReservation.purpose}</p>
                                 </div>
-                                
+
                                 {selectedReservation.notes && (
                                     <div className="mb-4">
                                         <p className="text-sm text-gray-500">Catatan</p>
@@ -479,15 +471,15 @@ const AdminDashboard = () => {
                     </div>
                 )}
             </div>
-            
+
             {/* Features Section */}
             <div className="bg-gray-900 py-12 relative overflow-hidden">
                 {/* Blurred background effect */}
                 <div className="absolute inset-0 bg-[url('./assets/images/bg-ftui.png')] bg-cover bg-center opacity-20"></div>
-                
+
                 <div className="container mx-auto px-4 relative z-10">
                     <h2 className="text-3xl font-qanelas font-[950] mb-10 text-white text-center">Fitur Utama</h2>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div className="bg-white rounded-lg p-6 hover:shadow-xl transition-shadow">
                             <div className="bg-primary-blue text-white rounded-full w-12 h-12 flex items-center justify-center mb-4">
@@ -498,7 +490,7 @@ const AdminDashboard = () => {
                             <h3 className="text-xl font-qanelas font-[800] mb-2 text-gray-800">Manajemen Reservasi</h3>
                             <p className="text-gray-600 mb-4">Kelola semua permintaan reservasi dengan mudah. Setujui atau tolak dengan cepat.</p>
                         </div>
-                        
+
                         <div className="bg-white rounded-lg p-6 hover:shadow-xl transition-shadow">
                             <div className="bg-primary-blue text-white rounded-full w-12 h-12 flex items-center justify-center mb-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -508,7 +500,7 @@ const AdminDashboard = () => {
                             <h3 className="text-xl font-qanelas font-[800] mb-2 text-gray-800">Riwayat Persetujuan</h3>
                             <p className="text-gray-600 mb-4">Lihat perubahan status dan catatan untuk setiap reservasi yang telah diproses.</p>
                         </div>
-                        
+
                         <div className="bg-white rounded-lg p-6 hover:shadow-xl transition-shadow">
                             <div className="bg-primary-blue text-white rounded-full w-12 h-12 flex items-center justify-center mb-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

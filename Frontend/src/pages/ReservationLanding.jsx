@@ -109,13 +109,13 @@ const ReservationLanding = () => {
                     </div>
                 )}
                 
-                <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+                <div className="bg-gray-300 rounded-lg shadow-md p-6 mb-8">
                     <h2 className="text-xl font-qanelas font-[800] mb-4 text-gray-800">Pilih Gedung</h2>
                     
                     <div className="flex flex-wrap gap-4 mb-6">
                         <div className="w-full sm:w-auto sm:flex-1">
                             <select
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800 font-normal"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-400 font-normal"
                                 value={selectedBuilding}
                                 onChange={handleBuildingChange}
                             >
@@ -166,7 +166,7 @@ const ReservationLanding = () => {
                         <div>
                             <label className="block text-gray-700 font-medium mb-2">Tipe Ruangan</label>
                             <select
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800 font-normal"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-400 font-normal"
                                 value={filterType}
                                 onChange={(e) => setFilterType(e.target.value)}
                             >
@@ -182,7 +182,7 @@ const ReservationLanding = () => {
                         <div>
                             <label className="block text-gray-700 font-medium mb-2">Kapasitas</label>
                             <select
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-800 font-normal"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-blue text-gray-400 font-normal"
                                 value={filterCapacity}
                                 onChange={(e) => setFilterCapacity(e.target.value)}
                             >

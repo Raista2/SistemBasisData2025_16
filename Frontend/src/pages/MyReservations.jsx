@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import PeminjamanService from '../services/PeminjamanService';
+import bgUI from '../assets/images/bg-ui.png';
 
 const MyReservations = () => {
     const { user } = useAuth();
@@ -119,7 +120,7 @@ const MyReservations = () => {
     }
 
     return (
-        <div className="pt-16 container mx-auto px-4 py-8 bg-white">
+        <div className="pt-16 container mx-auto px-4 py-8 bg-gray">
             <h1 className="text-3xl font-bold mb-6 text-primary-blue">Reservasiku</h1>
 
             {error && (
@@ -133,7 +134,7 @@ const MyReservations = () => {
                 <button
                     className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'all' 
                         ? 'bg-primary-blue text-white' 
-                        : 'text-primary-blue hover:bg-primary-blue hover:text-white'}`}
+                        : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'}`}
                     onClick={() => setActiveTab('all')}
                 >
                     Semua
@@ -141,7 +142,7 @@ const MyReservations = () => {
                 <button
                     className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'pending' 
                         ? 'bg-primary-blue text-white' 
-                        : 'text-primary-blue hover:bg-primary-blue hover:text-white'}`}
+                        : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'}`}
                     onClick={() => setActiveTab('pending')}
                 >
                     Menunggu
@@ -149,7 +150,7 @@ const MyReservations = () => {
                 <button
                     className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'approved' 
                         ? 'bg-primary-blue text-white' 
-                        : 'text-primary-blue hover:bg-primary-blue hover:text-white'}`}
+                        : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'}`}
                     onClick={() => setActiveTab('approved')}
                 >
                     Disetujui
@@ -157,7 +158,7 @@ const MyReservations = () => {
                 <button
                     className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'rejected' 
                         ? 'bg-primary-blue text-white' 
-                        : 'text-primary-blue hover:bg-primary-blue hover:text-white'}`}
+                        : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'}`}
                     onClick={() => setActiveTab('rejected')}
                 >
                     Ditolak
@@ -165,7 +166,7 @@ const MyReservations = () => {
                 <button
                     className={`px-4 py-2 rounded-md transition-colors ${activeTab === 'canceled' 
                         ? 'bg-primary-blue text-white' 
-                        : 'text-primary-blue hover:bg-primary-blue hover:text-white'}`}
+                        : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'}`}
                     onClick={() => setActiveTab('canceled')}
                 >
                     Dibatalkan

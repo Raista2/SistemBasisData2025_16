@@ -107,9 +107,8 @@ const Approval = () => {
                 <button
                     className={`px-6 py-2 rounded transition-colors ${
                         filter === 'pending'
-                            ? 'bg-primary-blue text-white'
-                            : 'text-primary-blue hover:bg-primary-blue hover:text-white'
-                    }`}
+                        ? 'bg-primary-blue text-white' 
+                        : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'                    }`}
                     onClick={() => setFilter('pending')}
                 >
                     Menunggu
@@ -117,9 +116,8 @@ const Approval = () => {
                 <button
                     className={`px-6 py-2 rounded transition-colors ${
                         filter === 'approved'
-                            ? 'bg-primary-blue text-white'
-                            : 'text-primary-blue hover:bg-primary-blue hover:text-white'
-                    }`}
+                        ? 'bg-primary-blue text-white' 
+                        : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'                    }`}
                     onClick={() => setFilter('approved')}
                 >
                     Disetujui
@@ -127,9 +125,8 @@ const Approval = () => {
                 <button
                     className={`px-6 py-2 rounded transition-colors ${
                         filter === 'rejected'
-                            ? 'bg-primary-blue text-white'
-                            : 'text-primary-blue hover:bg-primary-blue hover:text-white'
-                    }`}
+                        ? 'bg-primary-blue text-white' 
+                        : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'                    }`}
                     onClick={() => setFilter('rejected')}
                 >
                     Ditolak
@@ -137,9 +134,8 @@ const Approval = () => {
                 <button
                     className={`px-6 py-2 rounded transition-colors ${
                         filter === 'all'
-                            ? 'bg-primary-blue text-white'
-                            : 'text-primary-blue hover:bg-primary-blue hover:text-white'
-                    }`}
+                        ? 'bg-primary-blue text-white' 
+                        : 'text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white'                    }`}
                     onClick={() => setFilter('all')}
                 >
                     Semua
