@@ -216,7 +216,7 @@ const MyReservations = () => {
                                 <div className="mt-4 flex justify-between">
                                     <button
                                         onClick={() => showReservationDetails(reservation)}
-                                        className="text-primary-blue hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors"
+                                        className="text-primary-blue bg-white border-black hover:bg-primary-blue hover:text-white py-1 px-2 rounded transition-colors"
                                     >
                                         Lihat Detail
                                     </button>

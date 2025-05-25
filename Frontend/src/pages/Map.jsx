@@ -17,17 +17,6 @@ import { Style, Circle, Fill, Stroke, Text } from 'ol/style';
 const DEFAULT_CENTER = [106.82307, -6.36157]; 
 const DEFAULT_ZOOM = 17;
 
-// Koordinat gedung-gedung (hasil konversi dari Plus Code)
-const BUILDING_COORDINATES = {
-    "Gedung Dekanat": [106.82402136574673, -6.361659353302688],
-    "Gedung K": [106.8240595657383, -6.3624280673482365],
-    "Gedung S": [106.82468938927117, -6.361482386077552],
-    "Gedung GK": [106.82459880268621, -6.3612377953670896],
-    "Gedung A": [106.82347, -6.36132],
-    "Gedung E.C": [106.82511271888151, -6.3622051691798],
-    "Gedung ICell": [106.8229403292571, -6.362859290375997]
-};
-
 const MapComponent = () => {
     const [buildings, setBuildings] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -46,13 +35,21 @@ const MapComponent = () => {
                 const data = await GedungService.getAllGedung();
                 
                 const mappedBuildings = data.map(building => {
-                    const coordinates = BUILDING_COORDINATES[building.name] || DEFAULT_CENTER;
+                    const hasValidCoordinates = 
+                        building.posisi_peta_x && 
+                        building.posisi_peta_y && 
+                        !isNaN(building.posisi_peta_x) && 
+                        !isNaN(building.posisi_peta_y);
+                    
+                    const coordinates = hasValidCoordinates
+                        ? fromLonLat([parseFloat(building.posisi_peta_x), parseFloat(building.posisi_peta_y)])
+                        : fromLonLat(DEFAULT_CENTER);
                     
                     return {
                         id: building.id,
                         name: building.name,
                         acronym: building.singkatan || building.name.substring(building.name.lastIndexOf(' ') + 1),
-                        coordinates: fromLonLat(coordinates),
+                        coordinates: coordinates,
                         description: `${building.name} - Fakultas Teknik UI`
                     };
                 });
