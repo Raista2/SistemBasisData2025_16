@@ -39,6 +39,29 @@ const MapComponent = () => {
     const olMapRef = useRef(null);
     const navigate = useNavigate();
 
+    // Handler untuk mengukur dimensi container map saat di-render
+    useEffect(() => {
+        const updateDimensions = () => {
+            if (mapContainerRef.current) {
+                setMapDimensions({
+                    width: mapContainerRef.current.offsetWidth,
+                    height: mapContainerRef.current.offsetHeight
+                });
+            }
+        };
+
+        // Update dimensi saat komponen di-mount
+        updateDimensions();
+
+        // Tambahkan event listener untuk resize
+        window.addEventListener('resize', updateDimensions);
+
+        // Cleanup event listener
+        return () => {
+            window.removeEventListener('resize', updateDimensions);
+        };
+    }, []);
+
     useEffect(() => {
         const fetchBuildings = async () => {
             try {
@@ -82,6 +105,7 @@ const MapComponent = () => {
                 });
                 
                 setBuildings(fallbackBuildings);
+
             } finally {
                 setLoading(false);
             }
