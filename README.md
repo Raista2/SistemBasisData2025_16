@@ -11,12 +11,15 @@ Merupakan upgrade dari website pinjam ruang FT yang masih kurang dari sisi integ
 
 
 UML
+
 ![UML](https://github.com/Raista2/SistemBasisData2025_16/blob/89470db2ed07a330658d595d92cc915762f2d4da/Kelengkapan/UML%20KELOMPOK%2016%20-%20Pinjam%20Ruang%20FT%20V2.png?raw=true)
 
 ERD
+
 ![ERD](https://github.com/Raista2/SistemBasisData2025_16/blob/main/Kelengkapan/ERD%20KELOMPOK%2016%20-%20Pinjam%20Ruang%20FT%20V2.png?raw=true)
 
 Flowchart
+
 ![Flowchart](https://github.com/Raista2/SistemBasisData2025_16/blob/main/Kelengkapan/Flowchart%20FINPRO%20SBD%20-%20Pinjam%20Ruang%20FT%20V2.png?raw=true)
 
 
