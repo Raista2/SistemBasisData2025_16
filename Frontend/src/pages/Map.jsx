@@ -12,7 +12,7 @@ import Point from 'ol/geom/Point';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
 import { Style, Circle, Fill, Stroke, Text } from 'ol/style';
-
+ajslfkjsf
 // Koordinat UI Depok (center)
 const DEFAULT_CENTER = [106.82307, -6.36157]; 
 const DEFAULT_ZOOM = 17;
