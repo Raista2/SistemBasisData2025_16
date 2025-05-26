@@ -264,13 +264,41 @@ const HomePage = () => {
         transform: isVisible ? 'translateY(0px)' : 'translateY(20px)', // Reduced movement
         transition: `all 0.6s ease-out ${index * 0.1}s`
     });
-
+            
     if (loading) {
         return (
-            <div className="pt-16 flex justify-center items-center h-screen font-qanelas bg-white">
-                <div className="flex flex-col items-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-blue mb-4"></div>
-                    <p className="text-primary-blue font-medium animate-pulse">Loading...</p>
+            <div className="fixed inset-0 pt-16 flex justify-center items-center">
+                {/* Background with bgUI */}
+                <div 
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ 
+                        backgroundImage: `url(${bgUI})`,
+                        backgroundPosition: 'center',
+                        backgroundSize: 'cover',
+                        filter: 'blur(2px) brightness(0.4)'
+                    }}
+                />
+                
+                {/* Glass morphism card */}
+                <div className="relative z-10 backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-12 shadow-2xl max-w-md mx-4">
+                    <div className="text-center">
+                        {/* Subtle loading animation - bars */}
+                        <div className="flex justify-center items-end space-x-2 mb-8">
+                            <div className="w-2 h-8 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '0s', animationDuration: '1.2s'}}></div>
+                            <div className="w-2 h-12 bg-white/70 rounded-full animate-pulse" style={{animationDelay: '0.2s', animationDuration: '1.2s'}}></div>
+                            <div className="w-2 h-6 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '0.4s', animationDuration: '1.2s'}}></div>
+                            <div className="w-2 h-10 bg-white/80 rounded-full animate-pulse" style={{animationDelay: '0.6s', animationDuration: '1.2s'}}></div>
+                            <div className="w-2 h-4 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '0.8s', animationDuration: '1.2s'}}></div>
+                        </div>
+                        
+                        <h3 className="text-white font-bold text-xl mb-3">Memuat Data</h3>
+                        <p className="text-white/80 text-sm">Mohon tunggu sebentar...</p>
+                        
+                        {/* Subtle progress bar */}
+                        <div className="mt-6 w-full bg-white/20 rounded-full h-1 overflow-hidden">
+                            <div className="h-full bg-gradient-to-r from-primary-blue to-primary-yellow rounded-full animate-pulse"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -324,13 +352,13 @@ const HomePage = () => {
                             <div className="space-x-4 animate-fade-in-up animation-delay-400">
                                 <Link 
                                     to="/reservation" 
-                                    className="bg-white text-primary-blue px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 hover:shadow-lg transform"
+                                    className="bg-white text-primary-blue px-6 py-3 rounded-lg font-semibold border-2 border-transparent hover:bg-yellow-400 hover:border-white hover:text-primary-blue transition-all duration-300 hover:scale-105 hover:shadow-lg transform"
                                 >
                                     Buat Reservasi
                                 </Link>
                                 <Link 
                                     to="/my-reservations" 
-                                    className="bg-primary-yellow text-primary-blue px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-all duration-300 hover:scale-105 hover:shadow-lg transform"
+                                    className="bg-primary-yellow text-primary-blue px-6 py-3 rounded-lg font-semibold border-2 border-transparent hover:bg-red-500 hover:border-white hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-lg transform"
                                 >
                                     Lihat Reservasi Saya
                                 </Link>
@@ -556,7 +584,7 @@ const HomePage = () => {
                     </p>
                     <Link 
                         to={user ? "/reservation" : "/login"} 
-                        className="bg-primary-yellow text-primary-blue px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-all duration-300 inline-block hover:scale-105 hover:shadow-lg transform animate-pulse-gentle animate-fade-in-up animation-delay-400"
+                        className="bg-primary-yellow text-primary-blue px-6 py-3 rounded-lg font-semibold border-2 border-transparent hover:bg-red-500 hover:border-white hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-lg transform"
                     >
                         {user ? "Buat Reservasi Sekarang" : "Masuk untuk Mulai"}
                     </Link>

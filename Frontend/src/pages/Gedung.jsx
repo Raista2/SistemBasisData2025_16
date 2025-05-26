@@ -17,7 +17,7 @@ const Gedung = () => {
 
     const isAdmin = user && user.role === 'admin';
 
-    // Parallax scroll handler seperti homepage
+    // Parallax scroll handler
     useEffect(() => {
         const handleScroll = () => {
             setScrollY(window.pageYOffset);
@@ -87,20 +87,45 @@ const Gedung = () => {
                     return 0;
             }
         });
-
-    if (loading) {
-        return (
-            <div className="fixed inset-0 pt-16 flex justify-center items-center bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
-                <div className="text-center">
-                    <div className="relative">
-                        <div className="animate-spin rounded-full h-20 w-20 border-4 border-white/30 border-t-white mb-6"></div>
-                        <div className="absolute inset-0 rounded-full h-20 w-20 border-4 border-transparent border-r-primary-yellow animate-spin" style={{animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
+        
+        if (loading) {
+            return (
+                <div className="fixed inset-0 pt-16 flex justify-center items-center">
+                    {/* Background with bgUI */}
+                    <div 
+                        className="absolute inset-0 bg-cover bg-center"
+                        style={{ 
+                            backgroundImage: `url(${bgUI})`,
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover',
+                            filter: 'blur(2px) brightness(0.4)'
+                        }}
+                    />
+                    
+                    {/* Glass morphism card */}
+                    <div className="relative z-10 backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-12 shadow-2xl max-w-md mx-4">
+                        <div className="text-center">
+                            {/* Subtle loading animation - bars */}
+                            <div className="flex justify-center items-end space-x-2 mb-8">
+                                <div className="w-2 h-8 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '0s', animationDuration: '1.2s'}}></div>
+                                <div className="w-2 h-12 bg-white/70 rounded-full animate-pulse" style={{animationDelay: '0.2s', animationDuration: '1.2s'}}></div>
+                                <div className="w-2 h-6 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '0.4s', animationDuration: '1.2s'}}></div>
+                                <div className="w-2 h-10 bg-white/80 rounded-full animate-pulse" style={{animationDelay: '0.6s', animationDuration: '1.2s'}}></div>
+                                <div className="w-2 h-4 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '0.8s', animationDuration: '1.2s'}}></div>
+                            </div>
+                            
+                            <h3 className="text-white font-bold text-xl mb-3">Memuat Data</h3>
+                            <p className="text-white/80 text-sm">Mohon tunggu sebentar...</p>
+                            
+                            {/* Subtle progress bar */}
+                            <div className="mt-6 w-full bg-white/20 rounded-full h-1 overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-primary-blue to-primary-yellow rounded-full animate-pulse"></div>
+                            </div>
+                        </div>
                     </div>
-                    <p className="text-white font-medium text-lg animate-pulse">Memuat daftar gedung...</p>
                 </div>
-            </div>
-        );
-    }
+            );
+        }
 
     if (error) {
         return (
@@ -199,20 +224,16 @@ const Gedung = () => {
                     filter: 'blur(1px) brightness(0.7)'
                 }}
             />
-            
-            {/* Dark overlay untuk readability */}
-            <div className="fixed inset-0 bg-black/40 z-0" />
 
             {/* Main Content dengan gradient sections seperti homepage */}
             <div className="relative z-10 pt-20 pb-8 min-h-screen">
                 <div className="container mx-auto px-4">
                     {/* Header Section dengan gradient background */}
-                    <div className="relative py-12 w-full mb-8">
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/8 to-transparent backdrop-blur-md bg-clip-padding backdrop-filter"></div>
-                        <div className="glass-panel rounded-2xl p-8 relative z-10 fade-in-up">
+                    <div className="py-12 w-full mb-8">
+                        <div className="glass-panel rounded-2xl p-8 fade-in-up">
                             <div className="text-center mb-8">
                                 <h1 className="text-4xl md:text-5xl font-[950] text-white mb-4 drop-shadow-lg">
-                                    🏢 Daftar Gedung
+                                    Daftar Gedung
                                 </h1>
                                 <p className="text-white/80 text-lg max-w-2xl mx-auto">
                                     Jelajahi berbagai gedung Fakultas Teknik dan temukan ruangan yang sesuai dengan kebutuhan Anda
@@ -287,159 +308,147 @@ const Gedung = () => {
                         </div>
                     </div>
 
-                    {/* Results Counter dengan gradient background */}
-                    <div className="relative py-6 w-full mb-6">
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent backdrop-blur-sm bg-clip-padding backdrop-filter"></div>
-                        <div className="relative z-10">
-                            <p className="text-white/80 text-center">
-                                Menampilkan <span className="font-bold text-primary-yellow">{filteredAndSortedBuildings.length}</span> dari <span className="font-bold">{buildings.length}</span> gedung
-                            </p>
-                        </div>
+                    {/* Results Counter */}
+                    <div className="py-6 w-full mb-6">
+                        <p className="text-white/80 text-center">
+                            Menampilkan <span className="font-bold text-primary-yellow">{filteredAndSortedBuildings.length}</span> dari <span className="font-bold">{buildings.length}</span> gedung
+                        </p>
                     </div>
 
-                    {/* Grid View dengan gradient background */}
+                    {/* Grid View */}
                     {viewMode === 'grid' && (
-                        <div className="relative py-12 w-full">
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/6 to-transparent backdrop-blur-md bg-clip-padding backdrop-filter"></div>
-                            <div className="relative z-10">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                    {filteredAndSortedBuildings.map((building, index) => (
-                                        <div
-                                            key={building.id}
-                                            className="building-card rounded-xl p-6 group stagger-animation"
-                                            style={{ animationDelay: `${index * 0.1}s` }}
-                                        >
-                                            <div className="flex items-start justify-between mb-4">
-                                                <div className="p-3 bg-primary-blue/30 rounded-lg group-hover:bg-primary-blue/50 transition-colors duration-300">
-                                                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                                    </svg>
-                                                </div>
-                                                <span className="text-xs text-white/60 bg-white/10 px-2 py-1 rounded-full">
-                                                    {building.roomCount || 0} ruangan
-                                                </span>
+                        <div className="py-12 w-full">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                {filteredAndSortedBuildings.map((building, index) => (
+                                    <div
+                                        key={building.id}
+                                        className="building-card rounded-xl p-6 group stagger-animation"
+                                        style={{ animationDelay: `${index * 0.1}s` }}
+                                    >
+                                        <div className="flex items-start justify-between mb-4">
+                                            <div className="p-3 bg-primary-blue/30 rounded-lg group-hover:bg-primary-blue/50 transition-colors duration-300">
+                                                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                </svg>
                                             </div>
-
-                                            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary-yellow transition-colors duration-300">
-                                                {building.name}
-                                            </h3>
-                                            
-                                            <div className="space-y-2 mb-6">
-                                                <div className="flex items-center text-white/70">
-                                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    </svg>
-                                                    <span className="text-sm">{building.location || 'Lokasi tidak tersedia'}</span>
-                                                </div>
-                                                
-                                                <div className="flex items-center text-white/70">
-                                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                    <span className="text-sm">{building.operationHours || 'Jam operasional tidak tersedia'}</span>
-                                                </div>
-                                            </div>
-
-                                            <Link
-                                                to={`/ruangan/${building.id}`}
-                                                className="block w-full text-center py-3 bg-primary-blue/60 hover:bg-primary-blue text-white font-medium rounded-lg transition-all duration-300 hover:scale-105 group-hover:shadow-lg"
-                                            >
-                                                Lihat Ruangan
-                                            </Link>
-
-                                            {/* Tombol tambah ruangan khusus admin */}
-                                            {isAdmin && (
-                                                <Link
-                                                    to={`/admin/add-room/${building.id}`}
-                                                    className="bg-primary-yellow/80 text-primary-blue px-4 py-2 rounded-lg hover:bg-primary-yellow hover:scale-105 transition-all duration-300 flex items-center"
-                                                >
-                                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                                    </svg>
-                                                    Tambah Ruangan
-                                                </Link>
-                                            )}
+                                            <span className="text-xs text-white/60 bg-white/10 px-2 py-1 rounded-full">
+                                                {building.roomCount || 0} ruangan
+                                            </span>
                                         </div>
-                                    ))}
-                                </div>
+
+                                        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary-yellow transition-colors duration-300">
+                                            {building.name}
+                                        </h3>
+                                        
+                                        <div className="space-y-2 mb-6">
+                                            <div className="flex items-center text-white/70">
+                                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                                <span className="text-sm">{building.location || 'Lokasi tidak tersedia'}</span>
+                                            </div>
+                                            
+                                            <div className="flex items-center text-white/70">
+                                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                <span className="text-sm">{building.operationHours || 'Jam operasional tidak tersedia'}</span>
+                                            </div>
+                                        </div>
+
+                                        <Link
+                                            to={`/ruangan/${building.id}`}
+                                            className="block w-full text-center py-3 bg-primary-blue/60 hover:bg-primary-blue text-white font-medium rounded-lg transition-all duration-300 hover:scale-105 group-hover:shadow-lg"
+                                        >
+                                            Lihat Ruangan
+                                        </Link>
+
+                                        {/* Tombol tambah ruangan khusus admin */}
+                                        {isAdmin && (
+                                            <Link
+                                                to={`/admin/add-room/${building.id}`}
+                                                className="bg-primary-yellow/80 text-primary-blue px-4 py-2 rounded-lg hover:bg-primary-yellow hover:scale-105 transition-all duration-300 flex items-center mt-2"
+                                            >
+                                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                                </svg>
+                                                Tambah Ruangan
+                                            </Link>
+                                        )}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     )}
 
-                    {/* Table View dengan gradient background */}
+                    {/* Table View */}
                     {viewMode === 'table' && (
-                        <div className="relative py-12 w-full">
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/6 to-transparent backdrop-blur-md bg-clip-padding backdrop-filter"></div>
-                            <div className="relative z-10">
-                                <div className="glass-panel rounded-xl overflow-hidden fade-in-up">
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full">
-                                            <thead className="bg-white/10 border-b border-white/20">
-                                                <tr>
-                                                    <th className="py-4 px-6 text-left text-sm font-semibold text-white/90">Nama Gedung</th>
-                                                    <th className="py-4 px-6 text-left text-sm font-semibold text-white/90">Lokasi</th>
-                                                    <th className="py-4 px-6 text-center text-sm font-semibold text-white/90">Jumlah Ruangan</th>
-                                                    <th className="py-4 px-6 text-left text-sm font-semibold text-white/90">Jam Operasional</th>
-                                                    <th className="py-4 px-6 text-center text-sm font-semibold text-white/90">Aksi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-white/10">
-                                                {filteredAndSortedBuildings.map((building, index) => (
-                                                    <tr 
-                                                        key={building.id} 
-                                                        className="hover:bg-white/10 transition-colors duration-300 stagger-animation"
-                                                        style={{ animationDelay: `${index * 0.05}s` }}
-                                                    >
-                                                        <td className="py-4 px-6">
-                                                            <div className="flex items-center">
-                                                                <div className="p-2 bg-primary-blue/30 rounded mr-3">
-                                                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                                                    </svg>
-                                                                </div>
-                                                                <span className="text-white font-medium">{building.name}</span>
+                        <div className="py-12 w-full">
+                            <div className="glass-panel rounded-xl overflow-hidden fade-in-up">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead className="bg-white/10 border-b border-white/20">
+                                            <tr>
+                                                <th className="py-4 px-6 text-left text-sm font-semibold text-white/90">Nama Gedung</th>
+                                                <th className="py-4 px-6 text-left text-sm font-semibold text-white/90">Lokasi</th>
+                                                <th className="py-4 px-6 text-center text-sm font-semibold text-white/90">Jumlah Ruangan</th>
+                                                <th className="py-4 px-6 text-left text-sm font-semibold text-white/90">Jam Operasional</th>
+                                                <th className="py-4 px-6 text-center text-sm font-semibold text-white/90">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-white/10">
+                                            {filteredAndSortedBuildings.map((building, index) => (
+                                                <tr 
+                                                    key={building.id} 
+                                                    className="hover:bg-white/10 transition-colors duration-300 stagger-animation"
+                                                    style={{ animationDelay: `${index * 0.05}s` }}
+                                                >
+                                                    <td className="py-4 px-6">
+                                                        <div className="flex items-center">
+                                                            <div className="p-2 bg-primary-blue/30 rounded mr-3">
+                                                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                                </svg>
                                                             </div>
-                                                        </td>
-                                                        <td className="py-4 px-6 text-white/80">{building.location || '-'}</td>
-                                                        <td className="py-4 px-6 text-center">
-                                                            <span className="bg-primary-blue/30 text-white px-3 py-1 rounded-full text-sm font-medium">
-                                                                {building.roomCount || 0}
-                                                            </span>
-                                                        </td>
-                                                        <td className="py-4 px-6 text-white/80">{building.operationHours || '-'}</td>
-                                                        <td className="py-4 px-6 text-center">
-                                                            <Link
-                                                                to={`/ruangan/${building.id}`}
-                                                                className="glass-button text-white px-4 py-2 rounded-lg hover:scale-105 transition-all duration-300"
-                                                            >
-                                                                Lihat
-                                                            </Link>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                            <span className="text-white font-medium">{building.name}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="py-4 px-6 text-white/80">{building.location || '-'}</td>
+                                                    <td className="py-4 px-6 text-center">
+                                                        <span className="bg-primary-blue/30 text-white px-3 py-1 rounded-full text-sm font-medium">
+                                                            {building.roomCount || 0}
+                                                        </span>
+                                                    </td>
+                                                    <td className="py-4 px-6 text-white/80">{building.operationHours || '-'}</td>
+                                                    <td className="py-4 px-6 text-center">
+                                                        <Link
+                                                            to={`/ruangan/${building.id}`}
+                                                            className="glass-button text-white px-4 py-2 rounded-lg hover:scale-105 transition-all duration-300"
+                                                        >
+                                                            Lihat
+                                                        </Link>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    {/* Empty State dengan gradient background */}
+                    {/* Empty State */}
                     {filteredAndSortedBuildings.length === 0 && (
-                        <div className="relative py-12 w-full">
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/6 to-transparent backdrop-blur-md bg-clip-padding backdrop-filter"></div>
-                            <div className="relative z-10">
-                                <div className="glass-panel rounded-xl p-12 text-center fade-in-up">
-                                    <div className="text-white/60 mb-4">
-                                        <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                        </svg>
-                                    </div>
-                                    <h3 className="text-xl font-bold text-white mb-2">Tidak ada gedung ditemukan</h3>
-                                    <p className="text-white/70">Coba ubah kata kunci pencarian Anda</p>
+                        <div className="py-12 w-full">
+                            <div className="glass-panel rounded-xl p-12 text-center fade-in-up">
+                                <div className="text-white/60 mb-4">
+                                    <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
                                 </div>
+                                <h3 className="text-xl font-bold text-white mb-2">Tidak ada gedung ditemukan</h3>
+                                <p className="text-white/70">Coba ubah kata kunci pencarian Anda</p>
                             </div>
                         </div>
                     )}
