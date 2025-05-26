@@ -12,6 +12,7 @@ import Point from 'ol/geom/Point';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
 import { Style, Circle, Fill, Stroke, Text } from 'ol/style';
+import bgUI from '../assets/images/bg-ui.png';
 
 // Koordinat UI Depok (center)
 const DEFAULT_CENTER = [106.82307, -6.36157]; 
@@ -281,13 +282,41 @@ const MapComponent = () => {
         }
         setSelectedBuilding(null);
     };
-
+            
     if (loading) {
         return (
-            <div className="fixed inset-0 pt-16 flex justify-center items-center bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mb-4"></div>
-                    <p className="text-white font-medium">Memuat peta gedung...</p>
+            <div className="fixed inset-0 pt-16 flex justify-center items-center">
+                {/* Background with bgUI */}
+                <div 
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ 
+                        backgroundImage: `url(${bgUI})`,
+                        backgroundPosition: 'center',
+                        backgroundSize: 'cover',
+                        filter: 'blur(2px) brightness(0.4)'
+                    }}
+                />
+                
+                {/* Glass morphism card */}
+                <div className="relative z-10 backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-12 shadow-2xl max-w-md mx-4">
+                    <div className="text-center">
+                        {/* Subtle loading animation - bars */}
+                        <div className="flex justify-center items-end space-x-2 mb-8">
+                            <div className="w-2 h-8 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '0s', animationDuration: '1.2s'}}></div>
+                            <div className="w-2 h-12 bg-white/70 rounded-full animate-pulse" style={{animationDelay: '0.2s', animationDuration: '1.2s'}}></div>
+                            <div className="w-2 h-6 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '0.4s', animationDuration: '1.2s'}}></div>
+                            <div className="w-2 h-10 bg-white/80 rounded-full animate-pulse" style={{animationDelay: '0.6s', animationDuration: '1.2s'}}></div>
+                            <div className="w-2 h-4 bg-white/60 rounded-full animate-pulse" style={{animationDelay: '0.8s', animationDuration: '1.2s'}}></div>
+                        </div>
+                        
+                        <h3 className="text-white font-bold text-xl mb-3">Memuat Data</h3>
+                        <p className="text-white/80 text-sm">Mohon tunggu sebentar...</p>
+                        
+                        {/* Subtle progress bar */}
+                        <div className="mt-6 w-full bg-white/20 rounded-full h-1 overflow-hidden">
+                            <div className="h-full bg-gradient-to-r from-primary-blue to-primary-yellow rounded-full animate-pulse"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
