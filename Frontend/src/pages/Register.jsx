@@ -181,7 +181,7 @@ const Register = () => {
                             </button>
                         </form>
 
-                        <div className="mt-6 text-center">
+                        <div className="mt-6 text-center relative z-30">
                             <p className="text-white/80 text-sm drop-shadow">
                                 Sudah memiliki akun?{' '}
                                 <Link 
@@ -193,10 +193,10 @@ const Register = () => {
                             </p>
                         </div>
 
-                        {/* Additional glass effect decorations */}
-                        <div className="absolute -top-4 -left-4 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
-                        <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary-blue/10 rounded-full blur-2xl"></div>
-                        <div className="absolute top-1/2 -left-6 w-16 h-16 bg-primary-yellow/10 rounded-full blur-lg"></div>
+                        {/* Pindahkan decorations ke sini dengan z-index negatif */}
+                        <div className="absolute -top-4 -left-4 w-24 h-24 bg-white/5 rounded-full blur-xl -z-10"></div>
+                        <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary-blue/10 rounded-full blur-2xl -z-10"></div>
+                        <div className="absolute top-1/2 -left-6 w-16 h-16 bg-primary-yellow/10 rounded-full blur-lg -z-10"></div>
                     </div>
                 </div>
             </div>
